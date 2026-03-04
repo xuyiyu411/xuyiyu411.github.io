@@ -22,12 +22,12 @@
     <meta name="description" content="引言在 AI Agent 的工作流中，记忆（Memory） 是决定智能体能否持续学习、保持上下文连贯的核心能力。OpenClaw 提供了开箱即用的原生记忆方案，采用”文件即真相”的设计哲学，让智能体的记忆持久化变得简单而可靠。 设计理念OpenClaw 的原生记忆系统遵循**”Files as Source of Truth”**的设计哲学：  “The files are the source">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OpenClaw 记忆机制深度解析：了解openclaw原生方案">
-<meta property="og:url" content="https://xuyiyu411.github.io/2026/03/04/openclaw-memory/index.html">
+<meta property="og:url" content="https://xuyiyu411.github.io/2026/03/04/openclaw/openclaw-memory/index.html">
 <meta property="og:site_name" content="xuyiyu411">
 <meta property="og:description" content="引言在 AI Agent 的工作流中，记忆（Memory） 是决定智能体能否持续学习、保持上下文连贯的核心能力。OpenClaw 提供了开箱即用的原生记忆方案，采用”文件即真相”的设计哲学，让智能体的记忆持久化变得简单而可靠。 设计理念OpenClaw 的原生记忆系统遵循**”Files as Source of Truth”**的设计哲学：  “The files are the source">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-04T12:41:00.000Z">
-<meta property="article:modified_time" content="2026-03-04T12:42:23.480Z">
+<meta property="article:modified_time" content="2026-03-04T12:53:04.079Z">
 <meta property="article:author" content="xuyiyu">
 <meta property="article:tag" content="openclaw">
 <meta property="article:tag" content="memory">
@@ -291,8 +291,7 @@
 </li>
 <li><strong>语义检索</strong>：通过向量嵌入实现语义搜索</li>
 </ul>
-<h2 id="技术架构"><a href="#技术架构" class="headerlink" title="技术架构"></a>技术架构</h2><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs coq">┌─────────────────────────────────────────────────────────────┐<br>│                    OpenClaw 原生记忆层                        │<br>├─────────────────────────────────────────────────────────────┤<br>│  存储层                                                       │<br>│  ├── MEMORY.md (长期记忆)                                     │<br>│  └── memory/*.md (每日日志)                                   │<br>├─────────────────────────────────────────────────────────────┤<br>│  索引层 (SQLite + sqlite-vec)                                 │<br>│  ├── 文本分块 (~<span class="hljs-number">400</span> tokens, <span class="hljs-number">80</span> tokens 重叠)                   │<br>│  ├── 向量存储 (<span class="hljs-number">768</span><span class="hljs-number">-1536</span> 维, 依模型而定)                       │<br>│  └── BM25 全文索引 (FTS5)                                     │<br>├─────────────────────────────────────────────────────────────┤<br>│  检索层                                                       │<br>│  ├── Vector <span class="hljs-keyword">Search</span> (语义相似度)                               │<br>│  ├── BM25 Keyword <span class="hljs-keyword">Search</span> (关键词匹配)                         │<br>│  └── Hybrid <span class="hljs-keyword">Search</span> (混合检索, 可配置权重)                      │<br>└─────────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
-
+<h2 id="技术架构"><a href="#技术架构" class="headerlink" title="技术架构"></a>技术架构</h2><p>┌─────────────────────────────────────────────────────────────┐<br>│                    OpenClaw 原生记忆层                        │<br>├─────────────────────────────────────────────────────────────┤<br>│  存储层                                                       │<br>│  ├── MEMORY.md (长期记忆)                                     │<br>│  └── memory&#x2F;*.md (每日日志)                                   │<br>├─────────────────────────────────────────────────────────────┤<br>│  索引层 (SQLite + sqlite-vec)                                 │<br>│  ├── 文本分块 (~400 tokens, 80 tokens 重叠)                   │<br>│  ├── 向量存储 (768-1536 维, 依模型而定)                       │<br>│  └── BM25 全文索引 (FTS5)                                     │<br>├─────────────────────────────────────────────────────────────┤<br>│  检索层                                                       │<br>│  ├── Vector Search (语义相似度)                               │<br>│  ├── BM25 Keyword Search (关键词匹配)                         │<br>│  └── Hybrid Search (混合检索, 可配置权重)                      │<br>└─────────────────────────────────────────────────────────────┘</p>
 <h2 id="核心特性"><a href="#核心特性" class="headerlink" title="核心特性"></a>核心特性</h2><table>
 <thead>
 <tr>
@@ -464,7 +463,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>OpenClaw 记忆机制深度解析：了解openclaw原生方案</div>
-      <div>https://xuyiyu411.github.io/2026/03/04/openclaw-memory/</div>
+      <div>https://xuyiyu411.github.io/2026/03/04/openclaw/openclaw-memory/</div>
     </div>
     <div class="license-meta">
       
