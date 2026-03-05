@@ -1,0 +1,1102 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="xuyiyu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="引言AI Agent 已经能够帮我们写代码、改文档、管项目——但当我们让它去网上查找信息时，它往往束手无策。Twitter API 需要付费、Reddit 封锁服务器 IP、YouTube 字幕难以提取、小红书必须登录才能访问……每个平台都有自己的门槛。 Agent Reach 正是为解决这一痛点而生的开源工具。本文将全面介绍 Agent Reach 的功能特性、与 OpenClaw 的结合使用方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agent Reach：为 AI Agent 一键装上互联网能力的完整指南">
+<meta property="og:url" content="https://xuyiyu411.github.io/2026/03/05/openclaw/openclaw-skills-agent-reach/index.html">
+<meta property="og:site_name" content="xuyiyu411">
+<meta property="og:description" content="引言AI Agent 已经能够帮我们写代码、改文档、管项目——但当我们让它去网上查找信息时，它往往束手无策。Twitter API 需要付费、Reddit 封锁服务器 IP、YouTube 字幕难以提取、小红书必须登录才能访问……每个平台都有自己的门槛。 Agent Reach 正是为解决这一痛点而生的开源工具。本文将全面介绍 Agent Reach 的功能特性、与 OpenClaw 的结合使用方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-05T13:49:00.000Z">
+<meta property="article:modified_time" content="2026-03-05T13:50:31.987Z">
+<meta property="article:author" content="xuyiyu">
+<meta property="article:tag" content="openclaw">
+<meta property="article:tag" content="skills">
+<meta property="article:tag" content="agent-reach">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Agent Reach：为 AI Agent 一键装上互联网能力的完整指南 - xuyiyu411</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"xuyiyu411.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>xuyiyu411</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Agent Reach：为 AI Agent 一键装上互联网能力的完整指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-05 21:49" pubdate>
+          2026年3月5日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          86 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Agent Reach：为 AI Agent 一键装上互联网能力的完整指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>AI Agent 已经能够帮我们写代码、改文档、管项目——但当我们让它去网上查找信息时，它往往束手无策。Twitter API 需要付费、Reddit 封锁服务器 IP、YouTube 字幕难以提取、小红书必须登录才能访问……每个平台都有自己的门槛。</p>
+<p><strong>Agent Reach</strong> 正是为解决这一痛点而生的开源工具。本文将全面介绍 Agent Reach 的功能特性、与 OpenClaw 的结合使用方式，以及完整的安装配置流程。</p>
+<hr>
+<h2 id="一、Agent-Reach-是什么？"><a href="#一、Agent-Reach-是什么？" class="headerlink" title="一、Agent Reach 是什么？"></a>一、Agent Reach 是什么？</h2><h3 id="1-1-产品定位"><a href="#1-1-产品定位" class="headerlink" title="1.1 产品定位"></a>1.1 产品定位</h3><p>Agent Reach 是一个<strong>脚手架（Scaffolding）工具</strong>，而非传统意义上的框架。它的核心使命是：<strong>让 AI Agent 能够一键获得读取和搜索整个互联网的能力</strong>。</p>
+<blockquote>
+<p>“Give your AI agent eyes to see the entire internet.”</p>
+</blockquote>
+<p>通过 Agent Reach，你的 AI Agent 可以：</p>
+<ul>
+<li>📺 读取 YouTube 视频字幕并搜索相关内容</li>
+<li>🐦 搜索 Twitter&#x2F;X 推文、浏览时间线</li>
+<li>📖 访问 Reddit 帖子和评论</li>
+<li>📕 阅读小红书笔记、搜索内容</li>
+<li>📺 解析 B站视频字幕</li>
+<li>🔍 进行全网语义搜索</li>
+<li>📦 读取 GitHub 仓库信息和 Issue</li>
+<li>📡 订阅 RSS&#x2F;Atom 源</li>
+<li>💼 查看 LinkedIn 公开页面</li>
+<li>🎵 解析抖音视频信息</li>
+<li>💬 搜索和阅读微信公众号文章</li>
+</ul>
+<h3 id="1-2-核心设计理念"><a href="#1-2-核心设计理念" class="headerlink" title="1.2 核心设计理念"></a>1.2 核心设计理念</h3><p>Agent Reach 遵循以下设计原则：</p>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>完全免费</strong></td>
+<td>所有工具开源、所有 API 免费，唯一可能的成本是服务器代理（约 $1&#x2F;月）</td>
+</tr>
+<tr>
+<td><strong>隐私安全</strong></td>
+<td>Cookie 只存储在本地，不上传不外传，代码完全开源可审查</td>
+</tr>
+<tr>
+<td><strong>持续更新</strong></td>
+<td>底层工具定期追踪更新到最新版，用户无需手动维护</td>
+</tr>
+<tr>
+<td><strong>兼容所有 Agent</strong></td>
+<td>Claude Code、OpenClaw、Cursor、Windsurf 等任何能跑命令行的 Agent 都能用</td>
+</tr>
+<tr>
+<td><strong>自带诊断</strong></td>
+<td><code>agent-reach doctor</code> 一条命令即可检测各渠道连通性</td>
+</tr>
+</tbody></table>
+<h3 id="1-3-技术架构"><a href="#1-3-技术架构" class="headerlink" title="1.3 技术架构"></a>1.3 技术架构</h3><p>Agent Reach 采用<strong>可插拔的渠道架构</strong>，每个平台对应一个独立的上游工具：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs stylus">channels/<br>├── web<span class="hljs-selector-class">.py</span>          → Jina Reader (读任意网页)<br>├── twitter<span class="hljs-selector-class">.py</span>      → xreach CLI (Twitter/X 访问)<br>├── youtube<span class="hljs-selector-class">.py</span>      → yt-dlp (视频字幕提取)<br>├── github<span class="hljs-selector-class">.py</span>       → gh CLI (GitHub 操作)<br>├── bilibili<span class="hljs-selector-class">.py</span>     → yt-dlp (B站支持)<br>├── reddit<span class="hljs-selector-class">.py</span>       → JSON API + Exa (Reddit 搜索)<br>├── xiaohongshu<span class="hljs-selector-class">.py</span>  → mcporter MCP (小红书)<br>├── douyin<span class="hljs-selector-class">.py</span>       → douyin-mcp-server (抖音)<br>├── linkedin<span class="hljs-selector-class">.py</span>     → linkedin-scraper-mcp (LinkedIn)<br>├── bosszhipin<span class="hljs-selector-class">.py</span>   → mcp-bosszp (Boss直聘)<br>├── wechat<span class="hljs-selector-class">.py</span>       → camoufox + miku (微信公众号)<br>├── rss<span class="hljs-selector-class">.py</span>          → feedparser (RSS 订阅)<br>└── exa_search<span class="hljs-selector-class">.py</span>   → mcporter MCP (全网语义搜索)<br></code></pre></td></tr></table></figure>
+
+<p>每个渠道文件只负责检测上游工具是否可用，实际的读取和搜索由 Agent 直接调用上游工具完成。这种设计的优势在于：<strong>不满意某个组件？直接替换对应的 channel 文件即可</strong>。</p>
+<h3 id="1-4-支持的平台一览"><a href="#1-4-支持的平台一览" class="headerlink" title="1.4 支持的平台一览"></a>1.4 支持的平台一览</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>基础功能</th>
+<th>高级功能</th>
+<th>配置要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🌐 网页</td>
+<td>阅读任意网页</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+<tr>
+<td>📺 YouTube</td>
+<td>字幕提取 + 视频搜索</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+<tr>
+<td>📡 RSS</td>
+<td>阅读任意 RSS&#x2F;Atom 源</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+<tr>
+<td>🔍 全网搜索</td>
+<td>—</td>
+<td>语义搜索</td>
+<td>自动配置（MCP 接入，免费）</td>
+</tr>
+<tr>
+<td>📦 GitHub</td>
+<td>读公开仓库 + 搜索</td>
+<td>私有仓库、提 Issue&#x2F;PR</td>
+<td>需登录 GitHub</td>
+</tr>
+<tr>
+<td>🐦 Twitter&#x2F;X</td>
+<td>读单条推文</td>
+<td>搜索、浏览时间线、发推</td>
+<td>需配置 Cookie</td>
+</tr>
+<tr>
+<td>📺 B站</td>
+<td>本地：字幕提取 + 搜索</td>
+<td>服务器也能用</td>
+<td>服务器需配代理</td>
+</tr>
+<tr>
+<td>📖 Reddit</td>
+<td>搜索（通过 Exa）</td>
+<td>读帖子和评论</td>
+<td>服务器需配代理</td>
+</tr>
+<tr>
+<td>📕 小红书</td>
+<td>—</td>
+<td>阅读、搜索、发帖、评论</td>
+<td>需配置 Cookie</td>
+</tr>
+<tr>
+<td>🎵 抖音</td>
+<td>—</td>
+<td>视频解析、无水印下载</td>
+<td>需配置</td>
+</tr>
+<tr>
+<td>💼 LinkedIn</td>
+<td>读公开页面</td>
+<td>Profile 详情、职位搜索</td>
+<td>需配置</td>
+</tr>
+<tr>
+<td>🏢 Boss直聘</td>
+<td>读职位页</td>
+<td>搜索职位、打招呼</td>
+<td>需配置</td>
+</tr>
+<tr>
+<td>💬 微信公众号</td>
+<td>搜索 + 阅读全文</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、为什么-OpenClaw-需要-Agent-Reach？"><a href="#二、为什么-OpenClaw-需要-Agent-Reach？" class="headerlink" title="二、为什么 OpenClaw 需要 Agent Reach？"></a>二、为什么 OpenClaw 需要 Agent Reach？</h2><h3 id="2-1-OpenClaw-的核心能力"><a href="#2-1-OpenClaw-的核心能力" class="headerlink" title="2.1 OpenClaw 的核心能力"></a>2.1 OpenClaw 的核心能力</h3><p>OpenClaw 是一款自托管的 AI 网关，能够将 WhatsApp、Telegram、Discord、iMessage 等聊天应用连接到 AI 编码助手。它的核心优势在于：</p>
+<ul>
+<li><strong>多平台消息接入</strong>：统一处理来自不同渠道的用户消息</li>
+<li><strong>工具调用能力</strong>：支持函数调用、浏览器控制、代码执行等</li>
+<li><strong>插件扩展机制</strong>：可通过插件槽位扩展功能</li>
+</ul>
+<h3 id="2-2-OpenClaw-的信息获取瓶颈"><a href="#2-2-OpenClaw-的信息获取瓶颈" class="headerlink" title="2.2 OpenClaw 的信息获取瓶颈"></a>2.2 OpenClaw 的信息获取瓶颈</h3><p>尽管 OpenClaw 本身具备强大的工具调用能力，但在<strong>实时信息获取</strong>方面存在天然局限：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>问题描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查询最新技术动态</td>
+<td>无法直接访问 Twitter、Reddit 等社交平台</td>
+</tr>
+<tr>
+<td>分析视频内容</td>
+<td>无法提取 YouTube、B站视频字幕</td>
+</tr>
+<tr>
+<td>调研产品口碑</td>
+<td>无法读取小红书、知乎等中文社区内容</td>
+</tr>
+<tr>
+<td>跟踪开源项目</td>
+<td>GitHub API 有速率限制，且私有仓库需要认证</td>
+</tr>
+<tr>
+<td>全网信息检索</td>
+<td>缺乏高质量的语义搜索引擎</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-Agent-Reach-的价值补充"><a href="#2-3-Agent-Reach-的价值补充" class="headerlink" title="2.3 Agent Reach 的价值补充"></a>2.3 Agent Reach 的价值补充</h3><p>Agent Reach 恰好填补了 OpenClaw 的这些能力缺口：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">┌─────────────────────────────────────────────────────────────┐<br>│                      OpenClaw Gateway                        │<br>│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │<br>│  │   WhatsApp   │  │   Telegram   │  │    <span class="hljs-keyword">Discord </span>  │      │<br>│  └──────────────┘  └──────────────┘  └──────────────┘      │<br>│                                                              │<br>│  ┌──────────────────────────────────────────────────────┐  │<br>│  │              Agent Core (<span class="hljs-keyword">LLM </span>+ Tools)                 │  │<br>│  └──────────────────────────────────────────────────────┘  │<br>│                          ▲                                  │<br>│                          │ 调用                              │<br>│  ┌───────────────────────┴──────────────────────────────┐  │<br>│  │                   Agent Reach                         │  │<br>│  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐        │  │<br>│  │  │Twitter │ │YouTube │ │Reddit  │ │小红书  │ ...    │  │<br>│  │  └────────┘ └────────┘ └────────┘ └────────┘        │  │<br>│  └──────────────────────────────────────────────────────┘  │<br>└─────────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>通过集成 Agent Reach，OpenClaw 能够实现：</p>
+<ol>
+<li><strong>实时社交监听</strong>：监控 Twitter、Reddit 上的话题讨论</li>
+<li><strong>多媒体内容分析</strong>：提取视频字幕、分析图像内容</li>
+<li><strong>中文生态覆盖</strong>：访问小红书、B站、微信公众号等中文平台</li>
+<li><strong>零 API 成本</strong>：绕过昂贵的官方 API，使用免费方案</li>
+<li><strong>统一接口</strong>：所有平台通过一致的 CLI 接口访问</li>
+</ol>
+<h3 id="2-4-典型应用场景"><a href="#2-4-典型应用场景" class="headerlink" title="2.4 典型应用场景"></a>2.4 典型应用场景</h3><p><strong>场景一：技术舆情监控</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">用户：帮我看看最近大家在推特上怎么评价 OpenClaw？<br>OpenClaw → 调用 Agent Reach (xreach search <span class="hljs-string">&quot;OpenClaw&quot;</span> --<span class="hljs-keyword">json)</span><br><span class="hljs-keyword"></span>         → 返回相关推文摘要<br>         → <span class="hljs-keyword">LLM </span>生成分析报告<br></code></pre></td></tr></table></figure>
+
+<p><strong>场景二：视频内容学习</strong></p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs gradle">用户：这个 YouTube 教程讲了什么？https:<span class="hljs-comment">//youtube.com/watch?v=xxx</span><br>OpenClaw → 调用 Agent Reach (yt-dlp --<span class="hljs-keyword">dump</span>-json URL)<br>         → 提取字幕文本<br>         → LLM 总结核心要点<br></code></pre></td></tr></table></figure>
+
+<p><strong>场景三：产品调研</strong></p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sqf">用户：帮我在小红书上搜一下这款护肤品的口碑<br>OpenClaw → 调用 <span class="hljs-built_in">Agent</span> Reach (mcporter <span class="hljs-built_in">call</span> <span class="hljs-string">&#x27;xiaohongshu.search_feeds(...)&#x27;</span>)<br>         → 获取相关笔记<br>         → LLM 分析用户评价<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、OpenClaw-安装-Agent-Reach-完整指南"><a href="#三、OpenClaw-安装-Agent-Reach-完整指南" class="headerlink" title="三、OpenClaw 安装 Agent Reach 完整指南"></a>三、OpenClaw 安装 Agent Reach 完整指南</h2><h3 id="3-1-环境依赖"><a href="#3-1-环境依赖" class="headerlink" title="3.1 环境依赖"></a>3.1 环境依赖</h3><p>在安装 Agent Reach 之前，请确保系统满足以下条件：</p>
+<table>
+<thead>
+<tr>
+<th>依赖项</th>
+<th>最低版本</th>
+<th>检查命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Python</td>
+<td>3.9+</td>
+<td><code>python --version</code></td>
+</tr>
+<tr>
+<td>pip</td>
+<td>21.0+</td>
+<td><code>pip --version</code></td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>18+</td>
+<td><code>node --version</code></td>
+</tr>
+<tr>
+<td>npm</td>
+<td>8+</td>
+<td><code>npm --version</code></td>
+</tr>
+<tr>
+<td>Git</td>
+<td>2.30+</td>
+<td><code>git --version</code></td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>20.10+（可选）</td>
+<td><code>docker --version</code></td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：Docker 仅在需要使用小红书、抖音等 MCP 服务时才需要。</p>
+<h3 id="3-2-安装步骤"><a href="#3-2-安装步骤" class="headerlink" title="3.2 安装步骤"></a>3.2 安装步骤</h3><h4 id="方法一：通过-OpenClaw-Agent-自动安装（推荐）"><a href="#方法一：通过-OpenClaw-Agent-自动安装（推荐）" class="headerlink" title="方法一：通过 OpenClaw Agent 自动安装（推荐）"></a>方法一：通过 OpenClaw Agent 自动安装（推荐）</h4><p>这是最简单的方式，只需将以下指令发送给 OpenClaw：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">帮我安装 Agent Reach：https:<span class="hljs-regexp">//</span>raw.githubusercontent.com<span class="hljs-regexp">/Panniantong/</span>agent-reach<span class="hljs-regexp">/main/</span>docs/install.md<br></code></pre></td></tr></table></figure>
+
+<p>OpenClaw 会自动完成以下操作：</p>
+<ol>
+<li><strong>下载安装脚本</strong> - 从 GitHub 获取最新安装指南</li>
+<li><strong>安装 CLI 工具</strong> - 执行 <code>pip install agent-reach</code></li>
+<li><strong>安装系统依赖</strong> - 自动检测并安装 Node.js、gh CLI、mcporter、xreach 等</li>
+<li><strong>配置搜索引擎</strong> - 通过 MCP 接入 Exa（免费，无需 API Key）</li>
+<li><strong>检测运行环境</strong> - 判断是本地电脑还是服务器，给出相应配置建议</li>
+<li><strong>注册 SKILL.md</strong> - 在 Agent 的 skills 目录安装使用指南</li>
+</ol>
+<h4 id="方法二：手动安装"><a href="#方法二：手动安装" class="headerlink" title="方法二：手动安装"></a>方法二：手动安装</h4><p>如果你希望手动控制安装过程，可以按以下步骤执行：</p>
+<p><strong>步骤 1：安装 Python 包</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install agent-reach<br><br><span class="hljs-comment"># 或使用 uv（更快）</span><br>uv add agent-reach<br></code></pre></td></tr></table></figure>
+
+<p><strong>步骤 2：运行安装脚本</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 全自动模式（默认）</span><br>agent-reach install --<span class="hljs-built_in">env</span>=auto<br><br><span class="hljs-comment"># 安全模式（不自动修改系统，仅列出所需依赖）</span><br>agent-reach install --<span class="hljs-built_in">env</span>=auto --safe<br><br><span class="hljs-comment"># 预览模式（查看会做什么，但不实际执行）</span><br>agent-reach install --<span class="hljs-built_in">env</span>=auto --dry-run<br></code></pre></td></tr></table></figure>
+
+<p><strong>步骤 3：验证安装</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">agent-reach doctor<br></code></pre></td></tr></table></figure>
+
+<p>预期输出示例：</p>
+<figure class="highlight node-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs node-repl">✅ Web (Jina Reader) - 正常<br>✅ YouTube (yt-dlp) - 正常<br>✅ GitHub (gh CLI) - 正常（已认证）<br>✅ RSS (feedparser) - 正常<br>⚠️  Twitter/X (xreach) - 未配置 Cookie<br>⚠️  Reddit - 服务器环境，需要代理<br>⚠️  小红书 - Docker 服务未启动<br><span class="hljs-meta prompt_">...</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-判断是否安装完成"><a href="#3-3-判断是否安装完成" class="headerlink" title="3.3 判断是否安装完成"></a>3.3 判断是否安装完成</h3><p>安装完成的标志：</p>
+<ol>
+<li><p><strong>CLI 命令可用</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">which</span> agent-reach<br><span class="hljs-comment"># 应返回类似 /usr/local/bin/agent-reach 的路径</span><br><br>agent-reach --version<br><span class="hljs-comment"># 应显示版本号，如 0.3.2</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>doctor 命令正常运行</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">agent-reach doctor<br><span class="hljs-comment"># 应显示各渠道的状态检测报告</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>SKILL.md 已注册</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ls</span> ~/.openclaw/skills/agent-reach/<br><span class="hljs-comment"># 应看到 SKILL.md 文件</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>基础工具可用</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 测试网页读取</span><br>curl https://r.jina.ai/https://github.com/openclaw/openclaw<br><br><span class="hljs-comment"># 测试 YouTube（如有视频链接）</span><br>yt-dlp --version<br><br><span class="hljs-comment"># 测试 GitHub</span><br>gh --version<br></code></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<h2 id="四、Agent-Reach-使用指南"><a href="#四、Agent-Reach-使用指南" class="headerlink" title="四、Agent Reach 使用指南"></a>四、Agent Reach 使用指南</h2><h3 id="4-1-基础使用（无需配置）"><a href="#4-1-基础使用（无需配置）" class="headerlink" title="4.1 基础使用（无需配置）"></a>4.1 基础使用（无需配置）</h3><p>以下功能安装完成后立即可用，无需额外配置：</p>
+<h4 id="4-1-1-读取任意网页"><a href="#4-1-1-读取任意网页" class="headerlink" title="4.1.1 读取任意网页"></a>4.1.1 读取任意网页</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 方法 1：直接使用 Jina Reader</span><br>curl https://r.jina.ai/https://example.com<br><br><span class="hljs-comment"># 方法 2：通过 Agent Reach 封装</span><br>agent-reach read-web https://example.com<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-1-2-提取-YouTube-视频信息"><a href="#4-1-2-提取-YouTube-视频信息" class="headerlink" title="4.1.2 提取 YouTube 视频信息"></a>4.1.2 提取 YouTube 视频信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 获取视频元数据</span><br>yt-dlp --dump-json <span class="hljs-string">&quot;https://youtube.com/watch?v=VIDEO_ID&quot;</span><br><br><span class="hljs-comment"># 提取字幕</span><br>yt-dlp --write-sub --skip-download <span class="hljs-string">&quot;https://youtube.com/watch?v=VIDEO_ID&quot;</span><br><br><span class="hljs-comment"># 搜索 YouTube 视频</span><br>yt-dlp <span class="hljs-string">&quot;ytsearch10:关键词&quot;</span> --<span class="hljs-built_in">print</span> title,url<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-1-3-读取-RSS-订阅"><a href="#4-1-3-读取-RSS-订阅" class="headerlink" title="4.1.3 读取 RSS 订阅"></a>4.1.3 读取 RSS 订阅</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Python 脚本示例</span><br>python -c <span class="hljs-string">&quot;</span><br><span class="hljs-string">import feedparser</span><br><span class="hljs-string">feed = feedparser.parse(&#x27;https://example.com/feed.xml&#x27;)</span><br><span class="hljs-string">for entry in feed.entries[:5]:</span><br><span class="hljs-string">    print(f\&quot;&#123;entry.title&#125;: &#123;entry.link&#125;\&quot;)</span><br><span class="hljs-string">&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-1-4-全网语义搜索"><a href="#4-1-4-全网语义搜索" class="headerlink" title="4.1.4 全网语义搜索"></a>4.1.4 全网语义搜索</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 通过 mcporter 调用 Exa MCP 服务</span><br>mcporter call <span class="hljs-string">&#x27;exa.search(query: &quot;OpenClaw AI gateway&quot;, num_results: 5)&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-进阶使用（需要配置）"><a href="#4-2-进阶使用（需要配置）" class="headerlink" title="4.2 进阶使用（需要配置）"></a>4.2 进阶使用（需要配置）</h3><h4 id="4-2-1-配置-Twitter-X-访问"><a href="#4-2-1-配置-Twitter-X-访问" class="headerlink" title="4.2.1 配置 Twitter&#x2F;X 访问"></a>4.2.1 配置 Twitter&#x2F;X 访问</h4><p><strong>步骤 1：获取 Cookie</strong></p>
+<ol>
+<li>在 Chrome 中登录 Twitter&#x2F;X</li>
+<li>安装 <a target="_blank" rel="noopener" href="https://chromewebstore.google.com/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm">Cookie-Editor</a> 扩展</li>
+<li>导出当前页面的 Cookie（JSON 格式）</li>
+</ol>
+<p><strong>步骤 2：配置到 Agent Reach</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">agent-reach configure twitter-cookies <span class="hljs-string">&#x27;粘贴复制的 Cookie JSON&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>步骤 3：验证</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 读取单条推文</span><br>xreach tweet <span class="hljs-string">&quot;https://twitter.com/username/status/1234567890&quot;</span> --json<br><br><span class="hljs-comment"># 搜索推文</span><br>xreach search <span class="hljs-string">&quot;OpenClaw&quot;</span> --<span class="hljs-built_in">limit</span> 10 --json<br></code></pre></td></tr></table></figure>
+
+<p>⚠️ <strong>安全提醒</strong>：建议使用 Twitter 小号，不要用主账号。存在被封号风险。</p>
+<h4 id="4-2-2-配置-Reddit-访问（服务器环境）"><a href="#4-2-2-配置-Reddit-访问（服务器环境）" class="headerlink" title="4.2.2 配置 Reddit 访问（服务器环境）"></a>4.2.2 配置 Reddit 访问（服务器环境）</h4><p>由于 Reddit 封锁数据中心 IP，服务器部署时需要配置住宅代理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 配置代理</span><br>agent-reach configure proxy <span class="hljs-string">&quot;http://user:pass@host:port&quot;</span><br><br><span class="hljs-comment"># 推荐使用 Webshare（约 $1/月）</span><br><span class="hljs-comment"># 注册：https://www.webshare.io/</span><br></code></pre></td></tr></table></figure>
+
+<p>本地电脑通常不需要代理。</p>
+<h4 id="4-2-3-配置小红书访问"><a href="#4-2-3-配置小红书访问" class="headerlink" title="4.2.3 配置小红书访问"></a>4.2.3 配置小红书访问</h4><p>小红书需要通过 Docker 运行 MCP 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 确保 Docker 已安装并运行</span><br>docker --version<br><br><span class="hljs-comment"># Agent Reach 安装时会自动配置</span><br><span class="hljs-comment"># 验证服务状态</span><br>mcporter list<br><span class="hljs-comment"># 应看到 xiaohongshu-mcp 服务</span><br><br><span class="hljs-comment"># 使用示例</span><br>mcporter call <span class="hljs-string">&#x27;xiaohongshu.search_feeds(keyword: &quot;护肤品&quot;)&#x27;</span><br>mcporter call <span class="hljs-string">&#x27;xiaohongshu.get_feed_detail(note_id: &quot;123456&quot;)&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-2-4-配置-GitHub-认证"><a href="#4-2-4-配置-GitHub-认证" class="headerlink" title="4.2.4 配置 GitHub 认证"></a>4.2.4 配置 GitHub 认证</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用 gh CLI 登录</span><br>gh auth login<br><br><span class="hljs-comment"># 按提示选择：</span><br><span class="hljs-comment"># - GitHub.com</span><br><span class="hljs-comment"># - HTTPS</span><br><span class="hljs-comment"># - 浏览器登录（推荐）或 Token</span><br><br><span class="hljs-comment"># 验证</span><br>gh repo view openclaw/openclaw<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-在-OpenClaw-中使用"><a href="#4-3-在-OpenClaw-中使用" class="headerlink" title="4.3 在 OpenClaw 中使用"></a>4.3 在 OpenClaw 中使用</h3><p>安装完成后，OpenClaw 会自动识别 Agent Reach 的能力。你可以在对话中直接提出需求：</p>
+<p><strong>示例对话：</strong></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">用户：帮我看看这个 GitHub 仓库是做什么的 https:<span class="hljs-comment">//github.com/facebook/react</span><br><br>OpenClaw：我来帮你查看 React 仓库的信息。<br><span class="hljs-string">[调用 gh repo view facebook/react --json]</span><br><br>React 是 Facebook 开发的用于构建用户界面的 JavaScript 库……<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql">用户：帮我搜一下推特上大家怎么评价 Kimi K2<span class="hljs-number">.5</span><br><br>OpenClaw：正在搜索 Twitter 上关于 Kimi K2<span class="hljs-number">.5</span> 的讨论……<br>[调用 xreach <span class="hljs-keyword">search</span> &quot;Kimi K2.5&quot; <span class="hljs-comment">--limit 20]</span><br><br>根据搜索结果，用户主要关注以下几个方面：<br><span class="hljs-number">1.</span> 推理能力大幅提升……<br><span class="hljs-number">2.</span> 价格相比 GPT<span class="hljs-number">-4</span> 更有竞争力……<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">用户：这个 YouTube 视频讲了什么？https:<span class="hljs-comment">//youtube.com/watch?v=dQw4w9WgXcQ</span><br><br>OpenClaw：正在提取视频字幕……<br><span class="hljs-string">[调用 yt-dlp --dump-json URL]</span><br><br>该视频主要内容包括：……<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、常见问题与故障排查"><a href="#五、常见问题与故障排查" class="headerlink" title="五、常见问题与故障排查"></a>五、常见问题与故障排查</h2><h3 id="5-1-安装阶段问题"><a href="#5-1-安装阶段问题" class="headerlink" title="5.1 安装阶段问题"></a>5.1 安装阶段问题</h3><h4 id="问题-1：pip-install-agent-reach-失败"><a href="#问题-1：pip-install-agent-reach-失败" class="headerlink" title="问题 1：pip install agent-reach 失败"></a>问题 1：<code>pip install agent-reach</code> 失败</h4><p><strong>现象：</strong></p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><span class="hljs-keyword">ERROR: </span>Could not find a version that satisfies the requirement agent-reach<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 升级 pip</span><br>pip install --upgrade pip<br><br><span class="hljs-comment"># 使用 Python 3 明确指定</span><br>python3 -m pip install agent-reach<br><br><span class="hljs-comment"># 或使用 uv</span><br>uv pip install agent-reach<br></code></pre></td></tr></table></figure>
+
+<h4 id="问题-2：Node-js-npm-未找到"><a href="#问题-2：Node-js-npm-未找到" class="headerlink" title="问题 2：Node.js&#x2F;npm 未找到"></a>问题 2：Node.js&#x2F;npm 未找到</h4><p><strong>现象：</strong></p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><span class="hljs-keyword">Error: </span>Node.js is required but not found<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># macOS</span><br>brew install node<br><br><span class="hljs-comment"># Ubuntu/Debian</span><br>curl -fsSL https://deb.nodesource.com/setup_20.x | <span class="hljs-built_in">sudo</span> -E bash -<br><span class="hljs-built_in">sudo</span> apt-get install -y nodejs<br><br><span class="hljs-comment"># 验证</span><br>node --version<br>npm --version<br></code></pre></td></tr></table></figure>
+
+<h4 id="问题-3：权限不足"><a href="#问题-3：权限不足" class="headerlink" title="问题 3：权限不足"></a>问题 3：权限不足</h4><p><strong>现象：</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-type">Permission</span> denied: &#x27;<span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/lib/</span>python3.x<span class="hljs-regexp">/site-packages/</span><span class="hljs-operator">...</span>&#x27;<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用用户安装（推荐）</span><br>pip install --user agent-reach<br><br><span class="hljs-comment"># 或使用虚拟环境</span><br>python -m venv venv<br><span class="hljs-built_in">source</span> venv/bin/activate<br>pip install agent-reach<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-配置阶段问题"><a href="#5-2-配置阶段问题" class="headerlink" title="5.2 配置阶段问题"></a>5.2 配置阶段问题</h3><h4 id="问题-4：Twitter-Cookie-配置无效"><a href="#问题-4：Twitter-Cookie-配置无效" class="headerlink" title="问题 4：Twitter Cookie 配置无效"></a>问题 4：Twitter Cookie 配置无效</h4><p><strong>现象：</strong></p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs subunit">xreach tweet URL<br><span class="hljs-keyword">Error: </span>Authentication failed<br></code></pre></td></tr></table></figure>
+
+<p><strong>排查步骤：</strong></p>
+<ol>
+<li>确认 Cookie 是从 twitter.com 域名导出的</li>
+<li>检查 Cookie 是否包含 <code>auth_token</code> 字段</li>
+<li>确认账号未被锁定（尝试在浏览器中访问 Twitter）</li>
+<li>重新导出 Cookie 并配置</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 清除旧配置</span><br>agent-reach configure twitter-cookies <span class="hljs-string">&quot;&quot;</span><br><br><span class="hljs-comment"># 重新配置</span><br>agent-reach configure twitter-cookies <span class="hljs-string">&#x27;新的 Cookie JSON&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="问题-5：Reddit-返回-403"><a href="#问题-5：Reddit-返回-403" class="headerlink" title="问题 5：Reddit 返回 403"></a>问题 5：Reddit 返回 403</h4><p><strong>现象：</strong></p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><span class="hljs-keyword">Error: </span>403 Forbidden<br></code></pre></td></tr></table></figure>
+
+<p><strong>原因：</strong> Reddit 封锁了数据中心 IP</p>
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 配置住宅代理</span><br>agent-reach configure proxy <span class="hljs-string">&quot;http://user:pass@proxy.webshare.io:80&quot;</span><br><br><span class="hljs-comment"># 或使用本地电脑运行（无需代理）</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="问题-6：小红书-MCP-服务连接失败"><a href="#问题-6：小红书-MCP-服务连接失败" class="headerlink" title="问题 6：小红书 MCP 服务连接失败"></a>问题 6：小红书 MCP 服务连接失败</h4><p><strong>现象：</strong></p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><span class="hljs-keyword">Error: </span>Connection refused to xiaohongshu-mcp<br></code></pre></td></tr></table></figure>
+
+<p><strong>排查步骤：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 检查 Docker 是否运行</span><br>docker ps<br><br><span class="hljs-comment"># 2. 手动启动服务</span><br>docker run -d -p 3001:3001 xpzouying/xiaohongshu-mcp<br><br><span class="hljs-comment"># 3. 检查 mcporter 配置</span><br>mcporter list<br><br><span class="hljs-comment"># 4. 重新初始化</span><br>agent-reach install --<span class="hljs-built_in">env</span>=auto<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3-使用阶段问题"><a href="#5-3-使用阶段问题" class="headerlink" title="5.3 使用阶段问题"></a>5.3 使用阶段问题</h3><h4 id="问题-7：YouTube-字幕提取失败"><a href="#问题-7：YouTube-字幕提取失败" class="headerlink" title="问题 7：YouTube 字幕提取失败"></a>问题 7：YouTube 字幕提取失败</h4><p><strong>现象：</strong></p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit"><span class="hljs-keyword">ERROR: </span>Video unavailable<br></code></pre></td></tr></table></figure>
+
+<p><strong>可能原因及解决方案：</strong></p>
+<ol>
+<li><p><strong>视频被地区限制</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 配置代理</span><br>yt-dlp --proxy <span class="hljs-string">&quot;http://proxy:port&quot;</span> <span class="hljs-string">&quot;URL&quot;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>视频没有字幕</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 列出可用字幕</span><br>yt-dlp --list-subs <span class="hljs-string">&quot;URL&quot;</span><br><br><span class="hljs-comment"># 尝试自动生成字幕</span><br>yt-dlp --write-auto-sub --skip-download <span class="hljs-string">&quot;URL&quot;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>yt-dlp 版本过旧</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 更新 yt-dlp</span><br>pip install -U yt-dlp<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="问题-8：GitHub-API-速率限制"><a href="#问题-8：GitHub-API-速率限制" class="headerlink" title="问题 8：GitHub API 速率限制"></a>问题 8：GitHub API 速率限制</h4><p><strong>现象：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">API rate <span class="hljs-built_in">limit</span> exceeded<br></code></pre></td></tr></table></figure>
+
+<p><strong>解决方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用认证后的 gh CLI（速率限制更高）</span><br>gh auth status<br><br><span class="hljs-comment"># 或使用 Token</span><br><span class="hljs-built_in">export</span> GITHUB_TOKEN=<span class="hljs-string">&quot;your_token&quot;</span><br>gh repo view owner/repo<br></code></pre></td></tr></table></figure>
+
+<h4 id="问题-9：网页读取返回空内容"><a href="#问题-9：网页读取返回空内容" class="headerlink" title="问题 9：网页读取返回空内容"></a>问题 9：网页读取返回空内容</h4><p><strong>现象：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl https://r.jina.ai/https://example.com<br><span class="hljs-comment"># 返回空或错误</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>可能原因：</strong></p>
+<ol>
+<li>网站屏蔽了 Jina Reader 的请求</li>
+<li>网站需要 JavaScript 渲染</li>
+<li>网站有反爬机制</li>
+</ol>
+<p><strong>替代方案：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用 Firecrawl（需要 API Key）</span><br>curl -X GET <span class="hljs-string">&quot;https://api.firecrawl.dev/v1/scrape?url=URL&quot;</span> \<br>  -H <span class="hljs-string">&quot;Authorization: Bearer YOUR_KEY&quot;</span><br><br><span class="hljs-comment"># 或使用本地浏览器自动化</span><br><span class="hljs-comment"># （需要额外配置 Playwright/Selenium）</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4-诊断命令速查"><a href="#5-4-诊断命令速查" class="headerlink" title="5.4 诊断命令速查"></a>5.4 诊断命令速查</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 全面诊断</span><br>agent-reach doctor<br><br><span class="hljs-comment"># 查看配置</span><br>agent-reach config show<br><br><span class="hljs-comment"># 查看版本</span><br>agent-reach --version<br><br><span class="hljs-comment"># 查看帮助</span><br>agent-reach --<span class="hljs-built_in">help</span><br><br><span class="hljs-comment"># 测试特定渠道</span><br>agent-reach <span class="hljs-built_in">test</span> web<br>agent-reach <span class="hljs-built_in">test</span> twitter<br>agent-reach <span class="hljs-built_in">test</span> youtube<br><br><span class="hljs-comment"># 查看日志</span><br>agent-reach logs --<span class="hljs-built_in">tail</span> 100<br><br><span class="hljs-comment"># 重置配置</span><br>agent-reach config reset<br><br><span class="hljs-comment"># 卸载</span><br>agent-reach uninstall<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、最佳实践与安全建议"><a href="#六、最佳实践与安全建议" class="headerlink" title="六、最佳实践与安全建议"></a>六、最佳实践与安全建议</h2><h3 id="6-1-账号安全"><a href="#6-1-账号安全" class="headerlink" title="6.1 账号安全"></a>6.1 账号安全</h3><ol>
+<li><strong>使用专用小号</strong>：对于 Twitter、小红书等需要 Cookie 的平台，务必使用小号，不要用主账号</li>
+<li><strong>定期轮换 Cookie</strong>：建议每月更新一次 Cookie</li>
+<li><strong>监控账号状态</strong>：定期检查小号是否被限制或封禁</li>
+</ol>
+<h3 id="6-2-网络配置"><a href="#6-2-网络配置" class="headerlink" title="6.2 网络配置"></a>6.2 网络配置</h3><ol>
+<li><strong>本地优先</strong>：尽可能在本地电脑运行，避免服务器 IP 被封的问题</li>
+<li><strong>代理选择</strong>：如需代理，选择住宅代理而非数据中心代理</li>
+<li><strong>流量控制</strong>：避免短时间内大量请求同一平台</li>
+</ol>
+<h3 id="6-3-数据备份"><a href="#6-3-数据备份" class="headerlink" title="6.3 数据备份"></a>6.3 数据备份</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 备份配置文件</span><br><span class="hljs-built_in">cp</span> ~/.agent-reach/config.yaml ~/.agent-reach/config.yaml.backup<br><br><span class="hljs-comment"># 备份 SKILL.md</span><br><span class="hljs-built_in">cp</span> ~/.openclaw/skills/agent-reach/SKILL.md ~/agent-reach-skill-backup.md<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-4-更新维护"><a href="#6-4-更新维护" class="headerlink" title="6.4 更新维护"></a>6.4 更新维护</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 更新 Agent Reach</span><br>agent-reach update<br><br><span class="hljs-comment"># 或重新安装最新版</span><br>pip install -U agent-reach<br><br><span class="hljs-comment"># 更新底层工具</span><br>pip install -U yt-dlp<br>npm update -g xreach-cli<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><p>Agent Reach 为 OpenClaw 带来了强大的互联网信息获取能力，使其能够：</p>
+<ul>
+<li>✅ 实时监控社交媒体动态</li>
+<li>✅ 分析视频和多媒体内容</li>
+<li>✅ 覆盖中文互联网生态</li>
+<li>✅ 零成本访问各大平台</li>
+<li>✅ 通过统一接口简化开发</li>
+</ul>
+<p>通过本文的指南，你应该已经掌握了：</p>
+<ol>
+<li>Agent Reach 的核心功能和设计理念</li>
+<li>为什么 OpenClaw 需要 Agent Reach</li>
+<li>如何安装和验证 Agent Reach</li>
+<li>如何使用各种平台功能</li>
+<li>如何解决常见问题</li>
+</ol>
+<p>现在，你可以让 OpenClaw 帮你：</p>
+<ul>
+<li>监控技术社区的讨论热点</li>
+<li>分析竞争对手的产品动态</li>
+<li>研究特定话题的舆论趋势</li>
+<li>自动收集和整理网络信息</li>
+</ul>
+<p>祝使用愉快！</p>
+<hr>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Panniantong/Agent-Reach">Agent Reach GitHub 仓库</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Panniantong/Agent-Reach/blob/main/docs/README_en.md">Agent Reach 英文文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jina-ai/reader">Jina Reader</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/yt-dlp/yt-dlp">yt-dlp 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/xreach-cli">xreach CLI</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/">OpenClaw 官方文档</a></li>
+</ul>
+<hr>
+<p><em>本文基于 Agent Reach 最新版本编写，具体功能请以官方文档为准。</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/openclaw/" class="category-chain-item">openclaw</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/openclaw/skills/" class="category-chain-item">skills</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/openclaw/" class="print-no-link">#openclaw</a>
+      
+        <a href="/tags/skills/" class="print-no-link">#skills</a>
+      
+        <a href="/tags/agent-reach/" class="print-no-link">#agent-reach</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Agent Reach：为 AI Agent 一键装上互联网能力的完整指南</div>
+      <div>https://xuyiyu411.github.io/2026/03/05/openclaw/openclaw-skills-agent-reach/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>xuyiyu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/04/openclaw/openclaw-qmd/" title="OpenClaw 记忆机制深度解析：原生方案与 QMD 的对比及实操指南">
+                        <span class="hidden-mobile">OpenClaw 记忆机制深度解析：原生方案与 QMD 的对比及实操指南</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
