@@ -1,0 +1,871 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="xuyiyu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="引言新安装的 OpenClaw 2026.3.2 版本，你会发现它既不能帮你操作文件，也不能帮你安装skill。这难道是因为模型降智了吗？其实不是，而是因为 OpenClaw 2026.3.2 版本引入了更加精细化的权限管控机制，旨在提升系统安全性与可控性。本文档将详细介绍该版本新增的权限配置选项、使用场景及最佳实践。 一、核心权限架构1.1 权限管控层级OpenClaw 的权限管控采用三层架构：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenClaw 闲谈：2026.3.2 版本权限管控功能">
+<meta property="og:url" content="https://xuyiyu411.github.io/2026/03/06/openclaw/openclaw-2026.3.2-permission-control/index.html">
+<meta property="og:site_name" content="xuyiyu411">
+<meta property="og:description" content="引言新安装的 OpenClaw 2026.3.2 版本，你会发现它既不能帮你操作文件，也不能帮你安装skill。这难道是因为模型降智了吗？其实不是，而是因为 OpenClaw 2026.3.2 版本引入了更加精细化的权限管控机制，旨在提升系统安全性与可控性。本文档将详细介绍该版本新增的权限配置选项、使用场景及最佳实践。 一、核心权限架构1.1 权限管控层级OpenClaw 的权限管控采用三层架构：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-06T14:51:00.000Z">
+<meta property="article:modified_time" content="2026-03-06T14:53:59.231Z">
+<meta property="article:author" content="xuyiyu">
+<meta property="article:tag" content="openclaw">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>OpenClaw 闲谈：2026.3.2 版本权限管控功能 - xuyiyu411</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"xuyiyu411.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>xuyiyu411</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="OpenClaw 闲谈：2026.3.2 版本权限管控功能"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-06 22:51" pubdate>
+          2026年3月6日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          62 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">OpenClaw 闲谈：2026.3.2 版本权限管控功能</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>新安装的 OpenClaw 2026.3.2 版本，你会发现它既不能帮你操作文件，也不能帮你安装skill。这难道是因为模型降智了吗？其实不是，而是因为 OpenClaw 2026.3.2 版本引入了更加精细化的权限管控机制，旨在提升系统安全性与可控性。本文档将详细介绍该版本新增的权限配置选项、使用场景及最佳实践。</p>
+<h2 id="一、核心权限架构"><a href="#一、核心权限架构" class="headerlink" title="一、核心权限架构"></a>一、核心权限架构</h2><h3 id="1-1-权限管控层级"><a href="#1-1-权限管控层级" class="headerlink" title="1.1 权限管控层级"></a>1.1 权限管控层级</h3><p>OpenClaw 的权限管控采用三层架构：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>作用范围</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>全局默认</strong> (<code>agents.defaults</code>)</td>
+<td>所有 Agent 的默认行为</td>
+<td>最低</td>
+</tr>
+<tr>
+<td><strong>Agent 级别</strong> (<code>agents.list[].tools</code>)</td>
+<td>单个 Agent 的工具权限</td>
+<td>中等</td>
+</tr>
+<tr>
+<td><strong>沙箱级别</strong> (<code>tools.sandbox.tools</code>)</td>
+<td>沙箱环境中的工具限制</td>
+<td>最高（沙箱内）</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-权限决策流程"><a href="#1-2-权限决策流程" class="headerlink" title="1.2 权限决策流程"></a>1.2 权限决策流程</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs scss">用户请求 → 身份验证 → 权限检查 → 工具执行<br>                ↓<br>        ┌───────┴───────┐<br>        ↓               ↓<br>   允许列表(allow)   拒绝列表(deny)<br>        ↓               ↓<br>    显式授权        显式禁止<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、Tools-权限配置详解"><a href="#二、Tools-权限配置详解" class="headerlink" title="二、Tools 权限配置详解"></a>二、Tools 权限配置详解</h2><h3 id="2-1-基础配置结构"><a href="#2-1-基础配置结构" class="headerlink" title="2.1 基础配置结构"></a>2.1 基础配置结构</h3><p>在 <code>~/.openclaw/openclaw.json</code> 中，<code>tools</code> 配置段控制所有工具相关的权限：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  tools: &#123;<br>    // 全局工具配置<br>    profile: &quot;coding&quot;,           // 预设权限模板<br>    allow: [&quot;browser&quot;, &quot;read&quot;],  // 允许使用的工具白名单<br>    deny: [&quot;exec&quot;, &quot;write&quot;],     // 禁止使用的工具黑名单<br>    <br>    // 特权工具配置<br>    elevated: &#123;<br>      enabled: true,             // 是否启用特权模式<br>      allowFrom: &#123;               // 按渠道指定可执行特权操作的用户<br>        &quot;*&quot;: [&quot;admin&quot;],<br>        discord: [&quot;user:1234567890&quot;],<br>        telegram: [&quot;tg:987654321&quot;]<br>      &#125;<br>    &#125;,<br>    <br>    // 沙箱环境工具限制<br>    sandbox: &#123;<br>      tools: &#123;<br>        allow: [&quot;read&quot;, &quot;edit&quot;],<br>        deny: [&quot;browser&quot;, &quot;canvas&quot;, &quot;nodes&quot;, &quot;cron&quot;]<br>      &#125;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-权限配置字段说明"><a href="#2-2-权限配置字段说明" class="headerlink" title="2.2 权限配置字段说明"></a>2.2 权限配置字段说明</h3><h4 id="tools-profile-权限模板"><a href="#tools-profile-权限模板" class="headerlink" title="tools.profile - 权限模板"></a><code>tools.profile</code> - 权限模板</h4><p>OpenClaw 提供预设的权限模板，简化配置：</p>
+<table>
+<thead>
+<tr>
+<th>模板名称</th>
+<th>允许的工具</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>default</code></td>
+<td>基础读写、浏览器、搜索</td>
+<td>日常使用</td>
+</tr>
+<tr>
+<td><code>coding</code></td>
+<td>代码编辑、文件操作、Git</td>
+<td>开发辅助</td>
+</tr>
+<tr>
+<td><code>readonly</code></td>
+<td>仅读取类工具</td>
+<td>安全浏览</td>
+</tr>
+<tr>
+<td><code>restricted</code></td>
+<td>仅限聊天响应</td>
+<td>高安全环境</td>
+</tr>
+</tbody></table>
+<h4 id="tools-allow-tools-deny-显式授权-禁止"><a href="#tools-allow-tools-deny-显式授权-禁止" class="headerlink" title="tools.allow &#x2F; tools.deny - 显式授权&#x2F;禁止"></a><code>tools.allow</code> &#x2F; <code>tools.deny</code> - 显式授权&#x2F;禁止</h4><ul>
+<li><strong>白名单模式</strong>：若设置 <code>allow</code>，则仅允许列表中的工具可用</li>
+<li><strong>黑名单模式</strong>：若设置 <code>deny</code>，则除列表外的所有默认可用工具都可用</li>
+<li><strong>混合模式</strong>：同时设置时，<code>deny</code> 优先级高于 <code>allow</code></li>
+</ul>
+<p><strong>完整工具清单：</strong></p>
+<table>
+<thead>
+<tr>
+<th>工具类别</th>
+<th>工具名称</th>
+<th>风险等级</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件操作</td>
+<td><code>read</code></td>
+<td>低</td>
+<td>读取文件内容</td>
+</tr>
+<tr>
+<td>文件操作</td>
+<td><code>write</code></td>
+<td>中</td>
+<td>创建&#x2F;覆盖文件</td>
+</tr>
+<tr>
+<td>文件操作</td>
+<td><code>edit</code></td>
+<td>中</td>
+<td>精确编辑文件</td>
+</tr>
+<tr>
+<td>代码执行</td>
+<td><code>exec</code></td>
+<td>高</td>
+<td>执行 shell 命令</td>
+</tr>
+<tr>
+<td>代码执行</td>
+<td><code>process</code></td>
+<td>高</td>
+<td>管理后台进程</td>
+</tr>
+<tr>
+<td>网络浏览</td>
+<td><code>browser</code></td>
+<td>中</td>
+<td>浏览器自动化</td>
+</tr>
+<tr>
+<td>网络浏览</td>
+<td><code>web_search</code></td>
+<td>低</td>
+<td>网页搜索</td>
+</tr>
+<tr>
+<td>网络浏览</td>
+<td><code>web_fetch</code></td>
+<td>低</td>
+<td>获取网页内容</td>
+</tr>
+<tr>
+<td>图形界面</td>
+<td><code>canvas</code></td>
+<td>中</td>
+<td>画布操作</td>
+</tr>
+<tr>
+<td>设备控制</td>
+<td><code>nodes</code></td>
+<td>高</td>
+<td>节点设备控制</td>
+</tr>
+<tr>
+<td>消息通信</td>
+<td><code>message</code></td>
+<td>中</td>
+<td>发送消息</td>
+</tr>
+<tr>
+<td>会话管理</td>
+<td><code>sessions_spawn</code></td>
+<td>高</td>
+<td>创建子会话</td>
+</tr>
+<tr>
+<td>系统管理</td>
+<td><code>gateway</code></td>
+<td>极高</td>
+<td>网关控制</td>
+</tr>
+</tbody></table>
+<h4 id="tools-elevated-特权操作控制"><a href="#tools-elevated-特权操作控制" class="headerlink" title="tools.elevated - 特权操作控制"></a><code>tools.elevated</code> - 特权操作控制</h4><p>特权工具需要额外授权才能使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  tools: &#123;<br>    elevated: &#123;<br>      enabled: true,<br>      allowFrom: &#123;<br>        // 通配符 * 表示所有渠道<br>        &quot;*&quot;: [&quot;owner_id&quot;],<br>        // 渠道特定授权<br>        discord: [&quot;user:123456789012345678&quot;],<br>        telegram: [&quot;tg:123456789&quot;, &quot;@username&quot;],<br>        slack: [&quot;U1234567890&quot;],<br>        whatsapp: [&quot;+15555550123&quot;]<br>      &#125;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>特权工具包括：</strong></p>
+<ul>
+<li><code>exec</code>（shell 命令执行）</li>
+<li><code>process</code>（进程管理）</li>
+<li><code>gateway</code>（网关重启&#x2F;停止）</li>
+<li><code>nodes</code>（远程设备控制）</li>
+<li><code>sessions_spawn</code>（子代理创建）</li>
+</ul>
+<h2 id="三、Agent-级别权限覆盖"><a href="#三、Agent-级别权限覆盖" class="headerlink" title="三、Agent 级别权限覆盖"></a>三、Agent 级别权限覆盖</h2><h3 id="3-1-单-Agent-权限配置"><a href="#3-1-单-Agent-权限配置" class="headerlink" title="3.1 单 Agent 权限配置"></a>3.1 单 Agent 权限配置</h3><p>每个 Agent 可以拥有独立的工具权限：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  agents: &#123;<br>    list: [<br>      &#123;<br>        id: &quot;coding-assistant&quot;,<br>        name: &quot;代码助手&quot;,<br>        tools: &#123;<br>          profile: &quot;coding&quot;,<br>          allow: [&quot;read&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;exec&quot;, &quot;browser&quot;],<br>          deny: [&quot;nodes&quot;, &quot;gateway&quot;],<br>          elevated: &#123;<br>            enabled: true,<br>            allowFrom: &#123;<br>              &quot;*&quot;: [&quot;developer_1&quot;, &quot;developer_2&quot;]<br>            &#125;<br>          &#125;<br>        &#125;<br>      &#125;,<br>      &#123;<br>        id: &quot;safe-browser&quot;,<br>        name: &quot;安全浏览&quot;,<br>        tools: &#123;<br>          profile: &quot;readonly&quot;,<br>          allow: [&quot;read&quot;, &quot;web_search&quot;, &quot;web_fetch&quot;],<br>          deny: [&quot;exec&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;process&quot;]<br>        &#125;<br>      &#125;<br>    ]<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-权限继承规则"><a href="#3-2-权限继承规则" class="headerlink" title="3.2 权限继承规则"></a>3.2 权限继承规则</h3><p>Agent 级别的 <code>tools</code> 配置会<strong>完全覆盖</strong>全局默认值：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scss">全局 defaults<span class="hljs-selector-class">.tools</span> ──→ Agent<span class="hljs-selector-class">.tools</span> ──→ 最终权限<br>     (被忽略)              (生效)<br></code></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：若 Agent 未定义 <code>tools</code> 字段，则继承 <code>agents.defaults.tools</code>。</p>
+<h2 id="四、沙箱环境权限隔离"><a href="#四、沙箱环境权限隔离" class="headerlink" title="四、沙箱环境权限隔离"></a>四、沙箱环境权限隔离</h2><h3 id="4-1-沙箱工具限制"><a href="#4-1-沙箱工具限制" class="headerlink" title="4.1 沙箱工具限制"></a>4.1 沙箱工具限制</h3><p>当启用 Docker 沙箱时，可在沙箱内进一步限制可用工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  agents: &#123;<br>    defaults: &#123;<br>      sandbox: &#123;<br>        mode: &quot;non-main&quot;,    // off | non-main | all<br>        scope: &quot;agent&quot;,      // session | agent | shared<br>        workspaceAccess: &quot;ro&quot; // none | ro | rw<br>      &#125;<br>    &#125;<br>  &#125;,<br>  tools: &#123;<br>    sandbox: &#123;<br>      tools: &#123;<br>        // 沙箱内允许的基础工具<br>        allow: [<br>          &quot;exec&quot;,<br>          &quot;process&quot;,<br>          &quot;read&quot;,<br>          &quot;write&quot;,<br>          &quot;edit&quot;,<br>          &quot;sessions_list&quot;,<br>          &quot;sessions_history&quot;,<br>          &quot;sessions_send&quot;,<br>          &quot;sessions_spawn&quot;,<br>          &quot;session_status&quot;<br>        ],<br>        // 沙箱内明确禁止的高风险工具<br>        deny: [<br>          &quot;browser&quot;,    // 防止访问外部网站<br>          &quot;canvas&quot;,     // 防止图形操作<br>          &quot;nodes&quot;,      // 防止设备控制<br>          &quot;cron&quot;,       // 防止定时任务<br>          &quot;discord&quot;,    // 防止 Discord 操作<br>          &quot;gateway&quot;     // 防止网关控制<br>        ]<br>      &#125;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-沙箱权限优先级"><a href="#4-2-沙箱权限优先级" class="headerlink" title="4.2 沙箱权限优先级"></a>4.2 沙箱权限优先级</h3><p>沙箱内的工具权限受双重限制：</p>
+<ol>
+<li><strong>外层限制</strong>：Agent 的 <code>tools.allow/deny</code> 决定能否进入沙箱</li>
+<li><strong>内层限制</strong>：<code>tools.sandbox.tools</code> 决定在沙箱内能做什么</li>
+</ol>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs stylus">用户请求 <br>    ↓<br>Agent<span class="hljs-selector-class">.tools</span> 检查 ──→ 被拒绝？→ 终止<br>    ↓ 通过<br>进入沙箱容器<br>    ↓<br>tools<span class="hljs-selector-class">.sandbox</span><span class="hljs-selector-class">.tools</span> 检查 ──→ 被拒绝？→ 返回错误<br>    ↓ 通过<br>执行工具调用<br></code></pre></td></tr></table></figure>
+
+<h2 id="五、频道级别的命令权限"><a href="#五、频道级别的命令权限" class="headerlink" title="五、频道级别的命令权限"></a>五、频道级别的命令权限</h2><h3 id="5-1-命令授权配置"><a href="#5-1-命令授权配置" class="headerlink" title="5.1 命令授权配置"></a>5.1 命令授权配置</h3><p>除了工具权限，还可以控制聊天命令的使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  commands: &#123;<br>    native: &quot;auto&quot;,        // 自动注册原生命令（Discord/Telegram）<br>    text: true,            // 允许 /command 文本命令<br>    bash: false,           // 禁止 !bash 命令<br>    config: false,         // 禁止 /config 配置命令<br>    debug: false,          // 禁止 /debug 调试命令<br>    restart: false,        // 禁止 /restart 重启命令<br>    <br>    // 命令使用权限控制<br>    allowFrom: &#123;<br>      &quot;*&quot;: [&quot;trusted_user&quot;],           // 所有渠道的通用授权<br>      discord: [&quot;user:123&quot;, &quot;role:456&quot;], // Discord 特定<br>      telegram: [&quot;tg:789&quot;, &quot;@admin&quot;]     // Telegram 特定<br>    &#125;,<br>    <br>    useAccessGroups: true  // 是否使用访问组策略<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-频道特定的命令覆盖"><a href="#5-2-频道特定的命令覆盖" class="headerlink" title="5.2 频道特定的命令覆盖"></a>5.2 频道特定的命令覆盖</h3><p>部分频道支持独立的命令配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  channels: &#123;<br>    discord: &#123;<br>      commands: &#123;<br>        native: true,      // 启用 Discord 斜杠命令<br>        text: true         // 同时允许文本命令<br>      &#125;<br>    &#125;,<br>    telegram: &#123;<br>      customCommands: [    // 自定义 Bot 菜单命令<br>        &#123; command: &quot;backup&quot;, description: &quot;执行备份&quot; &#125;,<br>        &#123; command: &quot;status&quot;, description: &quot;查看状态&quot; &#125;<br>      ]<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、实战配置示例"><a href="#六、实战配置示例" class="headerlink" title="六、实战配置示例"></a>六、实战配置示例</h2><h3 id="6-1-企业安全环境配置"><a href="#6-1-企业安全环境配置" class="headerlink" title="6.1 企业安全环境配置"></a>6.1 企业安全环境配置</h3><p>适用于对安全性要求较高的企业部署：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  agents: &#123;<br>    defaults: &#123;<br>      tools: &#123;<br>        profile: &quot;readonly&quot;,<br>        deny: [&quot;exec&quot;, &quot;process&quot;, &quot;nodes&quot;, &quot;gateway&quot;],<br>        elevated: &#123;<br>          enabled: false  // 完全禁用特权操作<br>        &#125;<br>      &#125;,<br>      sandbox: &#123;<br>        mode: &quot;all&quot;,     // 所有会话都在沙箱中运行<br>        scope: &quot;session&quot;,<br>        workspaceAccess: &quot;none&quot;<br>      &#125;<br>    &#125;<br>  &#125;,<br>  tools: &#123;<br>    sandbox: &#123;<br>      tools: &#123;<br>        allow: [&quot;read&quot;, &quot;web_search&quot;, &quot;web_fetch&quot;],<br>        deny: [&quot;*&quot;]  // 禁止所有其他工具<br>      &#125;<br>    &#125;<br>  &#125;,<br>  commands: &#123;<br>    bash: false,<br>    config: false,<br>    restart: false,<br>    allowFrom: &#123;<br>      &quot;*&quot;: []  // 只有管理员可以使用命令<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2-开发团队配置"><a href="#6-2-开发团队配置" class="headerlink" title="6.2 开发团队配置"></a>6.2 开发团队配置</h3><p>适用于软件开发团队的灵活配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  agents: &#123;<br>    list: [<br>      &#123;<br>        id: &quot;dev-helper&quot;,<br>        tools: &#123;<br>          profile: &quot;coding&quot;,<br>          allow: [&quot;read&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;exec&quot;, &quot;browser&quot;, &quot;sessions_spawn&quot;],<br>          deny: [&quot;gateway&quot;, &quot;nodes&quot;],<br>          elevated: &#123;<br>            enabled: true,<br>            allowFrom: &#123;<br>              &quot;*&quot;: [&quot;lead_dev&quot;, &quot;dev_ops&quot;],<br>              slack: [&quot;U123456&quot;]<br>            &#125;<br>          &#125;<br>        &#125;,<br>        sandbox: &#123;<br>          mode: &quot;non-main&quot;,  // 非主会话使用沙箱<br>          workspaceAccess: &quot;rw&quot;<br>        &#125;<br>      &#125;<br>    ]<br>  &#125;,<br>  commands: &#123;<br>    bash: true,<br>    config: true,<br>    allowFrom: &#123;<br>      &quot;*&quot;: [&quot;lead_dev&quot;],<br>      slack: [&quot;U123456&quot;, &quot;U789012&quot;]<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-个人用户宽松配置"><a href="#6-3-个人用户宽松配置" class="headerlink" title="6.3 个人用户宽松配置"></a>6.3 个人用户宽松配置</h3><p>适用于个人用户的便捷配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  agents: &#123;<br>    defaults: &#123;<br>      tools: &#123;<br>        profile: &quot;default&quot;,<br>        elevated: &#123;<br>          enabled: true,<br>          allowFrom: &#123;<br>            &quot;*&quot;: [&quot;*&quot;]  // 允许所有用户（个人使用）<br>          &#125;<br>        &#125;<br>      &#125;,<br>      sandbox: &#123;<br>        mode: &quot;off&quot;  // 不使用沙箱以获得最大性能<br>      &#125;<br>    &#125;<br>  &#125;,<br>  commands: &#123;<br>    bash: true,<br>    config: true,<br>    debug: true,<br>    restart: true<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="七、故障排查"><a href="#七、故障排查" class="headerlink" title="七、故障排查"></a>七、故障排查</h2><h3 id="7-1-常见问题"><a href="#7-1-常见问题" class="headerlink" title="7.1 常见问题"></a>7.1 常见问题</h3><h4 id="Q-为什么工具调用被拒绝了？"><a href="#Q-为什么工具调用被拒绝了？" class="headerlink" title="Q: 为什么工具调用被拒绝了？"></a>Q: 为什么工具调用被拒绝了？</h4><p>检查以下配置点：</p>
+<ol>
+<li><strong>Agent 级别</strong>：确认 <code>agents.list[].tools.allow</code> 包含该工具</li>
+<li><strong>特权检查</strong>：高风险工具需要在 <code>elevated.allowFrom</code> 中授权</li>
+<li><strong>沙箱限制</strong>：如果在沙箱中运行，检查 <code>tools.sandbox.tools</code></li>
+</ol>
+<h4 id="Q-如何查看当前生效的权限？"><a href="#Q-如何查看当前生效的权限？" class="headerlink" title="Q: 如何查看当前生效的权限？"></a>Q: 如何查看当前生效的权限？</h4><p>使用 <code>/debug</code> 命令（需先启用）查看当前会话的权限状态。</p>
+<h4 id="Q-权限修改后何时生效？"><a href="#Q-权限修改后何时生效？" class="headerlink" title="Q: 权限修改后何时生效？"></a>Q: 权限修改后何时生效？</h4><ul>
+<li>配置文件修改后需要重启 Gateway</li>
+<li>部分配置支持热重载（见官方文档）</li>
+</ul>
+<h3 id="7-2-调试技巧"><a href="#7-2-调试技巧" class="headerlink" title="7.2 调试技巧"></a>7.2 调试技巧</h3><p>在配置文件中添加日志级别设置以排查权限问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json5">&#123;<br>  logging: &#123;<br>    level: &quot;debug&quot;,  // error | warn | info | debug<br>    includeToolCalls: true<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="八、版本变更说明"><a href="#八、版本变更说明" class="headerlink" title="八、版本变更说明"></a>八、版本变更说明</h2><h3 id="2026-3-2-版本更新要点"><a href="#2026-3-2-版本更新要点" class="headerlink" title="2026.3.2 版本更新要点"></a>2026.3.2 版本更新要点</h3><ol>
+<li>**新增 <code>tools.profile</code>**：预设权限模板，简化配置</li>
+<li>**增强 <code>elevated.allowFrom</code>**：支持更细粒度的渠道特定授权</li>
+<li><strong>改进沙箱权限隔离</strong>：<code>tools.sandbox.tools</code> 独立于主权限体系</li>
+<li><strong>优化权限继承逻辑</strong>：Agent 级别配置现在完全覆盖全局默认值</li>
+</ol>
+<h3 id="从旧版本迁移"><a href="#从旧版本迁移" class="headerlink" title="从旧版本迁移"></a>从旧版本迁移</h3><p>若从 2026.2.x 升级，请注意：</p>
+<ul>
+<li>原有 <code>tools</code> 配置仍然兼容</li>
+<li>建议逐步迁移到新的 <code>profile</code> 模板语法</li>
+<li><code>elevated.enabled</code> 默认为 <code>false</code>，如需特权操作请显式开启</li>
+</ul>
+<h2 id="九、参考资源"><a href="#九、参考资源" class="headerlink" title="九、参考资源"></a>九、参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/gateway/configuration-reference">OpenClaw 官方文档 - 配置参考</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw/issues">OpenClaw GitHub Issues</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/gateway/security">OpenClaw 安全配置最佳实践</a></li>
+</ul>
+<p><strong>文档版本</strong>: 1.0<br><strong>适用版本</strong>: OpenClaw 2026.3.2+<br><strong>最后更新</strong>: 2026年3月6日</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/openclaw/" class="category-chain-item">openclaw</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/openclaw/" class="print-no-link">#openclaw</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>OpenClaw 闲谈：2026.3.2 版本权限管控功能</div>
+      <div>https://xuyiyu411.github.io/2026/03/06/openclaw/openclaw-2026.3.2-permission-control/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>xuyiyu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/05/openclaw/openclaw-skills-agent-reach/" title="Agent Reach：为 OpenClaw 一键装上互联网能力">
+                        <span class="hidden-mobile">Agent Reach：为 OpenClaw 一键装上互联网能力</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
