@@ -27,7 +27,7 @@
 <meta property="og:description" content="引言AI Agent 已经能够帮我们写代码、改文档、管项目——但当我们让它去网上查找信息时，它往往束手无策。Twitter API 需要付费、Reddit 封锁服务器 IP、YouTube 字幕难以提取、小红书必须登录才能访问……每个平台都有自己的门槛。 Agent Reach 正是为解决这一痛点而生的开源工具。本文将全面介绍 Agent Reach 的功能特性、与 OpenClaw 的结合使用方">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-05T13:49:00.000Z">
-<meta property="article:modified_time" content="2026-03-06T14:56:22.990Z">
+<meta property="article:modified_time" content="2026-03-06T14:57:50.407Z">
 <meta property="article:author" content="xuyiyu">
 <meta property="article:tag" content="openclaw">
 <meta property="article:tag" content="skills">
@@ -236,7 +236,7 @@
         
         
         
-          87 分钟
+          86 分钟
         
       </span>
     
@@ -331,7 +331,94 @@
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs stylus">channels/<br>├── web<span class="hljs-selector-class">.py</span>          → Jina Reader (读任意网页)<br>├── twitter<span class="hljs-selector-class">.py</span>      → xreach CLI (Twitter/X 访问)<br>├── youtube<span class="hljs-selector-class">.py</span>      → yt-dlp (视频字幕提取)<br>├── github<span class="hljs-selector-class">.py</span>       → gh CLI (GitHub 操作)<br>├── bilibili<span class="hljs-selector-class">.py</span>     → yt-dlp (B站支持)<br>├── reddit<span class="hljs-selector-class">.py</span>       → JSON API + Exa (Reddit 搜索)<br>├── xiaohongshu<span class="hljs-selector-class">.py</span>  → mcporter MCP (小红书)<br>├── douyin<span class="hljs-selector-class">.py</span>       → douyin-mcp-server (抖音)<br>├── linkedin<span class="hljs-selector-class">.py</span>     → linkedin-scraper-mcp (LinkedIn)<br>├── bosszhipin<span class="hljs-selector-class">.py</span>   → mcp-bosszp (Boss直聘)<br>├── wechat<span class="hljs-selector-class">.py</span>       → camoufox + miku (微信公众号)<br>├── rss<span class="hljs-selector-class">.py</span>          → feedparser (RSS 订阅)<br>└── exa_search<span class="hljs-selector-class">.py</span>   → mcporter MCP (全网语义搜索)<br></code></pre></td></tr></table></figure>
 
 <p>每个渠道文件只负责检测上游工具是否可用，实际的读取和搜索由 Agent 直接调用上游工具完成。这种设计的优势在于：<strong>不满意某个组件？直接替换对应的 channel 文件即可</strong>。</p>
-<h3 id="1-4-支持的平台一览"><a href="#1-4-支持的平台一览" class="headerlink" title="1.4 支持的平台一览"></a>1.4 支持的平台一览</h3><p>| 平台 | 基础功能 | 高级功能 | 配置要求 |<br>|–||||<br>| 🌐 网页 | 阅读任意网页 | — | 无需配置 |<br>| 📺 YouTube | 字幕提取 + 视频搜索 | — | 无需配置 |<br>| 📡 RSS | 阅读任意 RSS&#x2F;Atom 源 | — | 无需配置 |<br>| 🔍 全网搜索 | — | 语义搜索 | 自动配置（MCP 接入，免费） |<br>| 📦 GitHub | 读公开仓库 + 搜索 | 私有仓库、提 Issue&#x2F;PR | 需登录 GitHub |<br>| 🐦 Twitter&#x2F;X | 读单条推文 | 搜索、浏览时间线、发推 | 需配置 Cookie |<br>| 📺 B站 | 本地：字幕提取 + 搜索 | 服务器也能用 | 服务器需配代理 |<br>| 📖 Reddit | 搜索（通过 Exa） | 读帖子和评论 | 服务器需配代理 |<br>| 📕 小红书 | — | 阅读、搜索、发帖、评论 | 需配置 Cookie |<br>| 🎵 抖音 | — | 视频解析、无水印下载 | 需配置 |<br>| 💼 LinkedIn | 读公开页面 | Profile 详情、职位搜索 | 需配置 |<br>| 🏢 Boss直聘 | 读职位页 | 搜索职位、打招呼 | 需配置 |<br>| 💬 微信公众号 | 搜索 + 阅读全文 | — | 无需配置 |</p>
+<h3 id="1-4-支持的平台一览"><a href="#1-4-支持的平台一览" class="headerlink" title="1.4 支持的平台一览"></a>1.4 支持的平台一览</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>基础功能</th>
+<th>高级功能</th>
+<th>配置要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🌐 网页</td>
+<td>阅读任意网页</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+<tr>
+<td>📺 YouTube</td>
+<td>字幕提取 + 视频搜索</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+<tr>
+<td>📡 RSS</td>
+<td>阅读任意 RSS&#x2F;Atom 源</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+<tr>
+<td>🔍 全网搜索</td>
+<td>—</td>
+<td>语义搜索</td>
+<td>自动配置（MCP 接入，免费）</td>
+</tr>
+<tr>
+<td>📦 GitHub</td>
+<td>读公开仓库 + 搜索</td>
+<td>私有仓库、提 Issue&#x2F;PR</td>
+<td>需登录 GitHub</td>
+</tr>
+<tr>
+<td>🐦 Twitter&#x2F;X</td>
+<td>读单条推文</td>
+<td>搜索、浏览时间线、发推</td>
+<td>需配置 Cookie</td>
+</tr>
+<tr>
+<td>📺 B站</td>
+<td>本地：字幕提取 + 搜索</td>
+<td>服务器也能用</td>
+<td>服务器需配代理</td>
+</tr>
+<tr>
+<td>📖 Reddit</td>
+<td>搜索（通过 Exa）</td>
+<td>读帖子和评论</td>
+<td>服务器需配代理</td>
+</tr>
+<tr>
+<td>📕 小红书</td>
+<td>—</td>
+<td>阅读、搜索、发帖、评论</td>
+<td>需配置 Cookie</td>
+</tr>
+<tr>
+<td>🎵 抖音</td>
+<td>—</td>
+<td>视频解析、无水印下载</td>
+<td>需配置</td>
+</tr>
+<tr>
+<td>💼 LinkedIn</td>
+<td>读公开页面</td>
+<td>Profile 详情、职位搜索</td>
+<td>需配置</td>
+</tr>
+<tr>
+<td>🏢 Boss直聘</td>
+<td>读职位页</td>
+<td>搜索职位、打招呼</td>
+<td>需配置</td>
+</tr>
+<tr>
+<td>💬 微信公众号</td>
+<td>搜索 + 阅读全文</td>
+<td>—</td>
+<td>无需配置</td>
+</tr>
+</tbody></table>
 <h2 id="二、为什么-OpenClaw-需要-Agent-Reach？"><a href="#二、为什么-OpenClaw-需要-Agent-Reach？" class="headerlink" title="二、为什么 OpenClaw 需要 Agent Reach？"></a>二、为什么 OpenClaw 需要 Agent Reach？</h2><h3 id="2-1-OpenClaw-的核心能力"><a href="#2-1-OpenClaw-的核心能力" class="headerlink" title="2.1 OpenClaw 的核心能力"></a>2.1 OpenClaw 的核心能力</h3><p>OpenClaw 是一款自托管的 AI 网关，能够将 WhatsApp、Telegram、Discord、iMessage 等聊天应用连接到 AI 编码助手。它的核心优势在于：</p>
 <ul>
 <li><strong>多平台消息接入</strong>：统一处理来自不同渠道的用户消息</li>
