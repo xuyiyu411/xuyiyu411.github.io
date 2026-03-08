@@ -1,0 +1,1010 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="xuyiyu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、什么是 TavilyTavily 是一个专为 AI 应用设计的实时网络搜索与内容提取 API 服务。它被称为 “AI 应用的网页访问层”（The web access layer for AI applications），旨在为开发者提供快速、可靠的网络数据获取能力。 核心功能Tavily 提供五大核心 API 端点：  Search（搜索）：实时网络搜索，获取相关网页内容和摘要 Extrac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tavily 为 OpenClaw 提供实时网络搜索能力">
+<meta property="og:url" content="https://xuyiyu411.github.io/2026/03/08/openclaw/openclaw-skills-tavily/index.html">
+<meta property="og:site_name" content="xuyiyu411">
+<meta property="og:description" content="一、什么是 TavilyTavily 是一个专为 AI 应用设计的实时网络搜索与内容提取 API 服务。它被称为 “AI 应用的网页访问层”（The web access layer for AI applications），旨在为开发者提供快速、可靠的网络数据获取能力。 核心功能Tavily 提供五大核心 API 端点：  Search（搜索）：实时网络搜索，获取相关网页内容和摘要 Extrac">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-08T06:42:00.000Z">
+<meta property="article:modified_time" content="2026-03-08T06:42:31.819Z">
+<meta property="article:author" content="xuyiyu">
+<meta property="article:tag" content="openclaw">
+<meta property="article:tag" content="skills">
+<meta property="article:tag" content="tavily">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Tavily 为 OpenClaw 提供实时网络搜索能力 - xuyiyu411</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"xuyiyu411.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>xuyiyu411</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Tavily 为 OpenClaw 提供实时网络搜索能力"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-08 14:42" pubdate>
+          2026年3月8日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Tavily 为 OpenClaw 提供实时网络搜索能力</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、什么是-Tavily"><a href="#一、什么是-Tavily" class="headerlink" title="一、什么是 Tavily"></a>一、什么是 Tavily</h2><p><strong>Tavily</strong> 是一个专为 AI 应用设计的实时网络搜索与内容提取 API 服务。它被称为 “AI 应用的网页访问层”（The web access layer for AI applications），旨在为开发者提供快速、可靠的网络数据获取能力。</p>
+<h3 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h3><p>Tavily 提供五大核心 API 端点：</p>
+<ol>
+<li><strong>Search（搜索）</strong>：实时网络搜索，获取相关网页内容和摘要</li>
+<li><strong>Extract（提取）</strong>：将任意网页转换为 LLM 可用的结构化数据</li>
+<li><strong>Crawl（爬取）</strong>：智能网站爬取，支持深度和广度控制</li>
+<li><strong>Map（映射）</strong>：发现网站的所有可访问页面</li>
+<li><strong>Research（研究）</strong>：深度研究任务，自动生成综合报告</li>
+</ol>
+<h3 id="技术优势"><a href="#技术优势" class="headerlink" title="技术优势"></a>技术优势</h3><ul>
+<li><strong>低延迟</strong>：p50 响应时间仅 180ms，市场最快</li>
+<li><strong>高可靠性</strong>：99.99% SLA 正常运行时间保证</li>
+<li><strong>智能提取</strong>：自动内容清洗、格式转换和文本提取</li>
+<li><strong>安全防护</strong>：内置安全、隐私和内容验证层，防止 PII 泄露和提示注入</li>
+<li><strong>海量处理</strong>：每月处理超过 1 亿次请求</li>
+</ul>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><ul>
+<li>AI Agent 的实时信息获取</li>
+<li>RAG（检索增强生成）工作流</li>
+<li>自动化研究任务</li>
+<li>内容聚合与分析</li>
+<li>知识库构建</li>
+</ul>
+<h2 id="二、为什么-OpenClaw-需要-Tavily"><a href="#二、为什么-OpenClaw-需要-Tavily" class="headerlink" title="二、为什么 OpenClaw 需要 Tavily"></a>二、为什么 OpenClaw 需要 Tavily</h2><p>OpenClaw 作为 AI 助手运行时，经常需要获取实时网络信息来回答用户问题。集成 Tavily 可以带来以下价值：</p>
+<h3 id="1-弥补知识时效性局限"><a href="#1-弥补知识时效性局限" class="headerlink" title="1. 弥补知识时效性局限"></a>1. 弥补知识时效性局限</h3><p>大语言模型的训练数据存在时间截止点，无法获取最新信息。Tavily 提供实时网络搜索能力，让 OpenClaw 能够：</p>
+<ul>
+<li>获取最新的新闻和事件</li>
+<li>查询当前的技术文档和版本信息</li>
+<li>了解最新的产品发布和行业动态</li>
+</ul>
+<h3 id="2-增强事实准确性"><a href="#2-增强事实准确性" class="headerlink" title="2. 增强事实准确性"></a>2. 增强事实准确性</h3><p>通过 Tavily 的搜索和提取功能，OpenClaw 可以：</p>
+<ul>
+<li>验证信息的准确性</li>
+<li>获取多源信息交叉印证</li>
+<li>减少幻觉（Hallucination）现象</li>
+</ul>
+<h3 id="3-扩展能力边界"><a href="#3-扩展能力边界" class="headerlink" title="3. 扩展能力边界"></a>3. 扩展能力边界</h3><p>Tavily 让 OpenClaw 具备以下新能力：</p>
+<ul>
+<li><strong>网页内容分析</strong>：直接读取和分析指定网页</li>
+<li><strong>深度研究</strong>：对复杂主题进行多轮搜索和综合分析</li>
+<li><strong>结构化数据提取</strong>：从网页中提取特定格式的信息</li>
+</ul>
+<h3 id="4-提升用户体验"><a href="#4-提升用户体验" class="headerlink" title="4. 提升用户体验"></a>4. 提升用户体验</h3><ul>
+<li>无需用户手动提供参考资料</li>
+<li>能够处理更广泛的实时性问题</li>
+<li>提供更全面、更准确的回答</li>
+</ul>
+<h2 id="三、OpenClaw-如何安装-Tavily"><a href="#三、OpenClaw-如何安装-Tavily" class="headerlink" title="三、OpenClaw 如何安装 Tavily"></a>三、OpenClaw 如何安装 Tavily</h2><h3 id="步骤1-安装-Tavily-扩展"><a href="#步骤1-安装-Tavily-扩展" class="headerlink" title="步骤1. 安装 Tavily 扩展"></a>步骤1. 安装 Tavily 扩展</h3><p>通过 ClawHub CLI 安装 Tavily 扩展：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">clawhub install tavily<br></code></pre></td></tr></table></figure>
+
+<p>安装完成后，skill 文件会被下载到 <code>./skills/tavily/</code> 目录下，包含以下文件：</p>
+<ul>
+<li><code>SKILL.md</code> - 使用说明文档</li>
+<li><code>references/api-reference.md</code> - API 参考文档</li>
+<li><code>scripts/tavily_search.py</code> - 搜索脚本</li>
+</ul>
+<h3 id="步骤2-获取-Tavily-API-Key"><a href="#步骤2-获取-Tavily-API-Key" class="headerlink" title="步骤2. 获取 Tavily API Key"></a>步骤2. 获取 Tavily API Key</h3><p>安装扩展后，需要获取 Tavily 的 API Key：</p>
+<ol>
+<li>访问 <a target="_blank" rel="noopener" href="https://www.tavily.com/">Tavily 官网</a></li>
+<li>注册账号并登录</li>
+<li>在 <a target="_blank" rel="noopener" href="https://app.tavily.com/home">App Dashboard</a> 创建 API Key</li>
+<li>每月免费赠送 1,000 API Credits</li>
+</ol>
+<h3 id="步骤3-配置-API-Key"><a href="#步骤3-配置-API-Key" class="headerlink" title="步骤3. 配置 API Key"></a>步骤3. 配置 API Key</h3><p>Tavily skill 支持以下三种方式配置 API Key：</p>
+<h4 id="方式一：OpenClaw-配置文件（推荐）"><a href="#方式一：OpenClaw-配置文件（推荐）" class="headerlink" title="方式一：OpenClaw 配置文件（推荐）"></a>方式一：OpenClaw 配置文件（推荐）</h4><p>编辑 OpenClaw 配置文件<code>~/.openclaw/openclaw.json</code>，添加 Tavily API Key：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;skills&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;entries&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;tavily&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;enabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;apiKey&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;tvly-YOUR_API_KEY_HERE&quot;</span><br>      <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="方式二：环境变量"><a href="#方式二：环境变量" class="headerlink" title="方式二：环境变量"></a>方式二：环境变量</h4><p>设置环境变量 <code>TAVILY_API_KEY</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 临时设置（当前终端会话）</span><br><span class="hljs-built_in">export</span> TAVILY_API_KEY=<span class="hljs-string">&quot;tvly-YOUR_API_KEY_HERE&quot;</span><br><br><span class="hljs-comment"># 永久设置（添加到 shell 配置文件）</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;export TAVILY_API_KEY=&quot;tvly-YOUR_API_KEY_HERE&quot;&#x27;</span> &gt;&gt; ~/.bashrc<br><span class="hljs-built_in">source</span> ~/.bashrc<br></code></pre></td></tr></table></figure>
+
+<p>或者添加到 OpenClaw 的 <code>.env</code> 文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 编辑 ~/.openclaw/.env 或项目目录下的 .env 文件</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;TAVILY_API_KEY=&quot;tvly-YOUR_API_KEY_HERE&quot;&#x27;</span> &gt;&gt; ~/.openclaw/.env<br></code></pre></td></tr></table></figure>
+
+<h3 id="步骤4-验证安装"><a href="#步骤4-验证安装" class="headerlink" title="步骤4. 验证安装"></a>步骤4. 验证安装</h3><p>验证 Tavily skill 是否安装成功：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 skill 详细信息</span><br>openclaw skills info tavily<br><br><span class="hljs-comment"># 检查 skill 状态</span><br>openclaw skills check<br></code></pre></td></tr></table></figure>
+
+<p>如果安装成功，<code>openclaw skills info tavily</code> 会显示：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs dts">📦 tavily ✓ Ready<br>AI-optimized web search via Tavily API. Returns concise, relevant results for AI agents.<br><span class="hljs-symbol">Details:</span><br><span class="hljs-symbol">  Source:</span> openclaw-workspace<br><span class="hljs-symbol">  Path:</span> ~/.openclaw<span class="hljs-keyword">/workspace/</span>skills<span class="hljs-keyword">/tavily-search/</span>SKILL.md<br><span class="hljs-symbol">  Homepage:</span> https:<span class="hljs-comment">//tavily.com</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：<code>openclaw skills check</code> 可能会显示其他 skill 的依赖缺失，只要 <code>tavily</code> 本身显示为可用状态即可正常使用。</p>
+<h2 id="四、如何使用-Tavily"><a href="#四、如何使用-Tavily" class="headerlink" title="四、如何使用 Tavily"></a>四、如何使用 Tavily</h2><p>OpenClaw 集成 Tavily 后，可以通过内置工具直接调用其功能。以下是各功能的使用方式：</p>
+<h3 id="基础搜索"><a href="#基础搜索" class="headerlink" title="基础搜索"></a>基础搜索</h3><p>在 OpenClaw 中使用 Tavily 进行网络搜索：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs prolog">用户：搜索一下 <span class="hljs-symbol">OpenClaw</span> 的最新功能<br><br><span class="hljs-symbol">AI</span>：我来帮你搜索 <span class="hljs-symbol">OpenClaw</span> 的最新功能...<br>[自动调用 <span class="hljs-symbol">Tavily</span> search 工具]<br></code></pre></td></tr></table></figure>
+
+<p><strong>常用参数</strong>：</p>
+<ul>
+<li><code>query</code>：搜索关键词</li>
+<li><code>max_results</code>：返回结果数量（默认 5）</li>
+<li><code>search_depth</code>：搜索深度，<code>basic</code>（基础）或 <code>advanced</code>（高级）</li>
+<li><code>topic</code>：主题类型，<code>general</code>（通用）或 <code>news</code>（新闻）</li>
+<li><code>time_range</code>：时间范围，<code>day</code>、<code>week</code>、<code>month</code>、<code>year</code></li>
+<li><code>include_answer</code>：是否包含 AI 生成的答案摘要</li>
+<li><code>include_raw_content</code>：是否包含原始网页内容</li>
+<li><code>include_images</code>：是否包含相关图片</li>
+<li><code>include_domains</code>：限定搜索的域名列表</li>
+<li><code>exclude_domains</code>：排除的域名列表</li>
+</ul>
+<h3 id="网页内容提取"><a href="#网页内容提取" class="headerlink" title="网页内容提取"></a>网页内容提取</h3><p>提取指定网页的内容：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">用户：提取 https:<span class="hljs-comment">//docs.tavily.com/welcome 的内容</span><br><br>AI：我来提取该网页的内容...<br><span class="hljs-string">[自动调用 Tavily extract 工具]</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常用参数</strong>：</p>
+<ul>
+<li><code>urls</code>：要提取的 URL（单个或列表）</li>
+<li><code>extract_depth</code>：提取深度，<code>basic</code> 或 <code>advanced</code></li>
+<li><code>format</code>：输出格式，<code>markdown</code> 或 <code>text</code></li>
+</ul>
+<h3 id="网站爬取"><a href="#网站爬取" class="headerlink" title="网站爬取"></a>网站爬取</h3><p>爬取整个网站的内容：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">用户：爬取 docs<span class="hljs-selector-class">.tavily</span><span class="hljs-selector-class">.com</span> 的所有 Python SDK 文档<br><br>AI：我来爬取该网站的 Python SDK 相关页面...<br><span class="hljs-selector-attr">[自动调用 Tavily crawl 工具]</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常用参数</strong>：</p>
+<ul>
+<li><code>url</code>：起始 URL</li>
+<li><code>instructions</code>：自然语言指令（可选）</li>
+<li><code>max_depth</code>：爬取深度</li>
+<li><code>max_breadth</code>：每层最大页面数</li>
+<li><code>limit</code>：总页面限制</li>
+<li><code>extract_depth</code>：内容提取深度</li>
+</ul>
+<h3 id="网站映射"><a href="#网站映射" class="headerlink" title="网站映射"></a>网站映射</h3><p>发现网站的所有可访问页面：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">用户：列出 docs<span class="hljs-selector-class">.tavily</span><span class="hljs-selector-class">.com</span> 的所有 API 文档页面<br><br>AI：我来映射该网站的页面结构...<br><span class="hljs-selector-attr">[自动调用 Tavily map 工具]</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常用参数</strong>：</p>
+<ul>
+<li><code>url</code>：目标网站 URL</li>
+<li><code>instructions</code>：自然语言筛选指令（可选）</li>
+<li><code>max_depth</code>：映射深度</li>
+<li><code>limit</code>：最大返回页面数</li>
+</ul>
+<h3 id="深度研究"><a href="#深度研究" class="headerlink" title="深度研究"></a>深度研究</h3><p>执行复杂的研究任务：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs prolog">用户：研究一下 <span class="hljs-symbol">AI</span> <span class="hljs-symbol">Agent</span> 的最新发展趋势<br><br><span class="hljs-symbol">AI</span>：我来进行深度研究...<br>[自动调用 <span class="hljs-symbol">Tavily</span> research 工具]<br></code></pre></td></tr></table></figure>
+
+<p><strong>常用参数</strong>：</p>
+<ul>
+<li><code>input</code>：研究主题或问题</li>
+<li><code>model</code>：模型选择，<code>pro</code> 或 <code>mini</code></li>
+<li><code>stream</code>：是否流式输出</li>
+<li><code>citation_format</code>：引用格式</li>
+</ul>
+<p><strong>注意</strong>：Research API 采用动态定价，消耗 credits 较多：</p>
+<ul>
+<li><code>model=pro</code>：每次请求消耗 15-250 credits</li>
+<li><code>model=mini</code>：每次请求消耗 4-110 credits</li>
+</ul>
+<h2 id="五、定价与限制"><a href="#五、定价与限制" class="headerlink" title="五、定价与限制"></a>五、定价与限制</h2><h3 id="免费额度"><a href="#免费额度" class="headerlink" title="免费额度"></a>免费额度</h3><ul>
+<li>每月 <strong>1,000 API Credits</strong>，无需信用卡</li>
+</ul>
+<h3 id="付费方案"><a href="#付费方案" class="headerlink" title="付费方案"></a>付费方案</h3><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>每月 Credits</th>
+<th>月费</th>
+<th>单价</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Researcher</td>
+<td>1,000</td>
+<td>免费</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Project</td>
+<td>4,000</td>
+<td>$30</td>
+<td>$0.0075</td>
+</tr>
+<tr>
+<td>Bootstrap</td>
+<td>15,000</td>
+<td>$100</td>
+<td>$0.0067</td>
+</tr>
+<tr>
+<td>Startup</td>
+<td>38,000</td>
+<td>$220</td>
+<td>$0.0058</td>
+</tr>
+<tr>
+<td>Growth</td>
+<td>100,000</td>
+<td>$500</td>
+<td>$0.005</td>
+</tr>
+<tr>
+<td>Pay-as-you-go</td>
+<td>按量计费</td>
+<td>$0.008&#x2F;Credit</td>
+<td>$0.008</td>
+</tr>
+</tbody></table>
+<h3 id="Credits-消耗规则"><a href="#Credits-消耗规则" class="headerlink" title="Credits 消耗规则"></a>Credits 消耗规则</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>基础模式</th>
+<th>高级模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Search</td>
+<td>1 credit&#x2F;请求</td>
+<td>2 credits&#x2F;请求</td>
+</tr>
+<tr>
+<td>Extract</td>
+<td>1 credit&#x2F;5 URLs</td>
+<td>2 credits&#x2F;5 URLs</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>1 credit&#x2F;10 页面</td>
+<td>2 credits&#x2F;10 页面（含指令）</td>
+</tr>
+<tr>
+<td>Crawl</td>
+<td>Mapping + Extraction 费用合计</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Research (pro)</td>
+<td>15-250 credits&#x2F;请求</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Research (mini)</td>
+<td>4-110 credits&#x2F;请求</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h3 id="速率限制"><a href="#速率限制" class="headerlink" title="速率限制"></a>速率限制</h3><table>
+<thead>
+<tr>
+<th>环境</th>
+<th>默认端点</th>
+<th>Crawl 端点</th>
+<th>Research 端点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Development</td>
+<td>100 RPM</td>
+<td>100 RPM</td>
+<td>20 RPM</td>
+</tr>
+<tr>
+<td>Production</td>
+<td>1,000 RPM</td>
+<td>100 RPM</td>
+<td>20 RPM</td>
+</tr>
+</tbody></table>
+<p><em>注：Production Key 需要付费计划或 PAYGO 启用</em></p>
+<h2 id="六、可能存在的问题"><a href="#六、可能存在的问题" class="headerlink" title="六、可能存在的问题"></a>六、可能存在的问题</h2><h3 id="1-成本问题"><a href="#1-成本问题" class="headerlink" title="1. 成本问题"></a>1. 成本问题</h3><p><strong>问题描述</strong>：</p>
+<ul>
+<li>高频调用可能导致 credits 快速消耗</li>
+<li>Research API 的动态定价可能导致意外高额费用</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>设置使用预算和告警</li>
+<li>优先使用 basic search depth</li>
+<li>缓存常用查询结果</li>
+<li>使用 <code>include_usage=True</code> 监控实际消耗</li>
+</ul>
+<h3 id="2-速率限制"><a href="#2-速率限制" class="headerlink" title="2. 速率限制"></a>2. 速率限制</h3><p><strong>问题描述</strong>：</p>
+<ul>
+<li>Development 环境仅 100 RPM</li>
+<li>Research 端点限制 20 RPM</li>
+<li>高并发场景可能触发限流</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>升级到 Production Key（需付费计划）</li>
+<li>实现请求队列和重试机制</li>
+<li>使用指数退避策略</li>
+</ul>
+<h3 id="3-内容质量"><a href="#3-内容质量" class="headerlink" title="3. 内容质量"></a>3. 内容质量</h3><p><strong>问题描述</strong>：</p>
+<ul>
+<li>某些网站的提取质量可能不佳</li>
+<li>动态渲染的网站可能无法正确提取</li>
+<li>非英文内容的处理效果可能有差异</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>使用 <code>extract_depth=&quot;advanced&quot;</code> 提高提取质量</li>
+<li>针对特定网站调整提取策略</li>
+<li>结合多个数据源交叉验证</li>
+</ul>
+<h3 id="4-API-依赖风险"><a href="#4-API-依赖风险" class="headerlink" title="4. API 依赖风险"></a>4. API 依赖风险</h3><p><strong>问题描述</strong>：</p>
+<ul>
+<li>第三方服务存在可用性风险</li>
+<li>服务变更可能影响现有功能</li>
+<li>数据隐私和合规性考虑</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>实现降级策略（如 Tavily 不可用时使用备用搜索）</li>
+<li>关注 Tavily 官方更新和变更日志</li>
+<li>评估数据处理的合规性要求</li>
+</ul>
+<h3 id="5-响应时间"><a href="#5-响应时间" class="headerlink" title="5. 响应时间"></a>5. 响应时间</h3><p><strong>问题描述</strong>：</p>
+<ul>
+<li>网络搜索本身有延迟</li>
+<li>Research API 可能需要较长时间</li>
+<li>批量提取可能超时</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>设置合理的超时时间</li>
+<li>对于 Research 任务使用异步模式</li>
+<li>分批处理大量 URL</li>
+</ul>
+<h3 id="6-内容安全"><a href="#6-内容安全" class="headerlink" title="6. 内容安全"></a>6. 内容安全</h3><p><strong>问题描述</strong>：</p>
+<ul>
+<li>搜索结果可能包含不当内容</li>
+<li>需要过滤敏感信息</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>利用 Tavily 内置的安全过滤层</li>
+<li>在后处理中添加内容审核</li>
+<li>使用 <code>exclude_domains</code> 排除不可信来源</li>
+</ul>
+<h2 id="七、最佳实践"><a href="#七、最佳实践" class="headerlink" title="七、最佳实践"></a>七、最佳实践</h2><h3 id="1-查询优化"><a href="#1-查询优化" class="headerlink" title="1. 查询优化"></a>1. 查询优化</h3><ul>
+<li>使用具体、明确的关键词</li>
+<li>利用 <code>include_domains</code> 限定可信来源</li>
+<li>根据需求选择合适的 <code>search_depth</code></li>
+</ul>
+<h3 id="2-成本控制"><a href="#2-成本控制" class="headerlink" title="2. 成本控制"></a>2. 成本控制</h3><ul>
+<li>监控 API 调用频率和 credits 消耗</li>
+<li>设置预算告警</li>
+<li>对高频查询启用缓存</li>
+</ul>
+<h3 id="3-错误处理"><a href="#3-错误处理" class="headerlink" title="3. 错误处理"></a>3. 错误处理</h3><ul>
+<li>处理 API 限流和超时错误</li>
+<li>实现降级策略</li>
+<li>记录错误日志以便排查</li>
+</ul>
+<h3 id="4-监控与日志"><a href="#4-监控与日志" class="headerlink" title="4. 监控与日志"></a>4. 监控与日志</h3><ul>
+<li>记录 API 调用频率和 credits 消耗</li>
+<li>监控响应时间和错误率</li>
+<li>设置预算告警</li>
+</ul>
+<h2 id="八、相关资源"><a href="#八、相关资源" class="headerlink" title="八、相关资源"></a>八、相关资源</h2><ul>
+<li><strong>官网</strong>：<a target="_blank" rel="noopener" href="https://www.tavily.com/">https://www.tavily.com/</a></li>
+<li><strong>GitHub</strong>：<a target="_blank" rel="noopener" href="https://github.com/tavily-ai">https://github.com/tavily-ai</a></li>
+<li><strong>文档</strong>：<a target="_blank" rel="noopener" href="https://docs.tavily.com/welcome">https://docs.tavily.com/welcome</a></li>
+<li><strong>ClawHub</strong>：<a target="_blank" rel="noopener" href="https://clawhub.ai/bert-builder/tavily">https://clawhub.ai/bert-builder/tavily</a></li>
+<li><strong>Playground</strong>：<a target="_blank" rel="noopener" href="https://app.tavily.com/playground">https://app.tavily.com/playground</a></li>
+<li><strong>社区</strong>：<a target="_blank" rel="noopener" href="https://community.tavily.com/">https://community.tavily.com/</a></li>
+<li><strong>状态页</strong>：<a target="_blank" rel="noopener" href="https://status.tavily.com/">https://status.tavily.com/</a></li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Tavily 是一个功能强大、易于集成的 AI 搜索服务，为 OpenClaw 提供了实时获取网络信息的能力。通过合理使用其 Search、Extract、Crawl、Map 和 Research 五大功能，可以显著增强 AI 助手的信息获取和知识更新能力。</p>
+<p>在使用过程中，需要注意成本控制、速率限制和内容质量等问题，并通过缓存、错误处理和监控等手段确保服务的稳定性和可靠性。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/openclaw/" class="category-chain-item">openclaw</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/openclaw/skills/" class="category-chain-item">skills</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/openclaw/" class="print-no-link">#openclaw</a>
+      
+        <a href="/tags/skills/" class="print-no-link">#skills</a>
+      
+        <a href="/tags/tavily/" class="print-no-link">#tavily</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Tavily 为 OpenClaw 提供实时网络搜索能力</div>
+      <div>https://xuyiyu411.github.io/2026/03/08/openclaw/openclaw-skills-tavily/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>xuyiyu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/07/openclaw/openclaw-skills-skill-vetter/" title="Skill Vetter：为 OpenClaw 安装skill保驾护航">
+                        <span class="hidden-mobile">Skill Vetter：为 OpenClaw 安装skill保驾护航</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
